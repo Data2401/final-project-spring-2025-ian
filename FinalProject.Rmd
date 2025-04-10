@@ -6,6 +6,9 @@ date: "2025-04-10"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggplot2)
 ```
 
 ## R Markdown
