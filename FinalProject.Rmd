@@ -33,12 +33,22 @@ View(diabetes_prediction_dataset)
 You can also embed plots, for example:
 
 ```{r}
+diabetes_dataset
 # male datatset
 male_data = diabetes_dataset %>% filter(gender == "Male")
 # female dataset
 female_data = diabetes_dataset %>% filter(gender == "Female")
 # count of people (male and female) with both heart disease and diabetes
- diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1)
+diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1)
+# "obese men" with bmi higher than 30 and that have diabetes (tally on second line)
+male_data %>% filter(bmi >= 30, diabetes == 1)
+male_data %>% filter(bmi >= 30, diabetes == 1) %>% tally()
+# "obese women" with bmi higher than 30 and that have diabetes (tally on second line)
+female_data %>% filter(bmi >= 30, diabetes == 1)
+female_data %>% filter(bmi >= 30, diabetes == 1) %>% tally()
+# average "obese men" 
+
+ 
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
