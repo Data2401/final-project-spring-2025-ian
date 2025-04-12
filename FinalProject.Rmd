@@ -38,17 +38,43 @@ diabetes_dataset
 male_data = diabetes_dataset %>% filter(gender == "Male")
 # female dataset
 female_data = diabetes_dataset %>% filter(gender == "Female")
+female_data
+
+# males and females within original dataset that have a "normal" A1C
+
+female_data %>% filter(HbA1c_level <= 5.7) %>% tally()
+male_data %>% filter(HbA1c_level <= 5.7) %>% tally()
+
+
+
+
 # count of people (male and female) with both heart disease and diabetes
 diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1)
+# count of overweight people based on bmi who have heart disease
+diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1)
+diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1) 
+
+
 # "obese men" with bmi higher than 30 and that have diabetes (tally on second line)
 male_data %>% filter(bmi >= 30, diabetes == 1)
 male_data %>% filter(bmi >= 30, diabetes == 1) %>% tally()
 # "obese women" with bmi higher than 30 and that have diabetes (tally on second line)
 female_data %>% filter(bmi >= 30, diabetes == 1)
 female_data %>% filter(bmi >= 30, diabetes == 1) %>% tally()
-# average "obese men" 
-
+# "underweight men"  with bmi lower than 19 and that have diabetes (tally on second line)
+male_data %>% filter(bmi <= 19, diabetes == 1)
+male_data %>% filter(bmi <= 19, diabetes == 1) %>% tally()
+# "underweight women"  with bmi lower than 19 and that have diabetes (tally on second line)
+female_data %>% filter(bmi <= 19, diabetes == 1)
+female_data %>% filter(bmi <= 19, diabetes == 1) %>% tally()
+# the assumption is that overweight people are more likely to have diabetes. Below is the code and tally of MEN who are overweight in terms of bmi and DONT have diabetes
+male_data %>% filter(bmi >= 30, diabetes == 0)
+male_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
+# the assumption is that overweight people are more likely to have diabetes. Below is the code and tally of WOMEN who are overweight in terms of bmi and DONT have diabetes
+female_data %>% filter(bmi >= 30, diabetes == 0)
+female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
  
 ```
+
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
