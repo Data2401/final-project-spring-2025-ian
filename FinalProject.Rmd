@@ -81,7 +81,7 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 
 
 ```{r}
-# in this section we want to display a stack bar showing how HbA1c levels (average blood sugar levels) classify Males and Females in the categories of Normal, Prediabetes, and Diabetes. From this plot we gain insight on how the distribution of Normal, Prediabetes, and Diabetes varies between both genders.
+# in this section we want to display a stack bar showing how HbA1c levels (average blood sugar levels) can classify Males and Females in different categories such as Normal, Prediabetes, and Diabetes. From this plot we gain insight on how the distribution of Normal, Prediabetes, and Diabetes varies between both genders.
 
 # first we load our libraries such as dplyr for data manipulation, ggplot2 for data visualization, and plotly to make our plot interactive.
 library(dplyr)
@@ -91,9 +91,9 @@ library(plotly)
 # here we display our original dataset
 diabetes_dataset
 
-# from our original data set we create a new dataset called HbA1c_by_gender. For our new dataset we want to keep only the Male and Female gender and exclude Other, the way to do this is by filtering our gender column to not equal to 'Other'. We also create a new variable called diabetes_category with the use of our mutate function. We use the case_when function to classify our HbA1c_level column and return different categories such as 'Normal', 'Prediabetes', and 'Diabetes'.
+# from our original data set we create a new dataset called HbA1c_by_gender. For our new dataset we want to keep only the Male and Female gender and exclude Other, the way to do this is by filtering our gender column to not equal to 'Other'. We also create a new variable called HbA1c_category with the use of our mutate function. We use the case_when function to classify our HbA1c_level column and return different categories such as 'Normal', 'Prediabetes', and 'Diabetes'.
 HbA1c_by_gender <- diabetes_dataset %>% filter(gender != 'Other') %>% 
-  mutate(diabetes_category = case_when(
+  mutate(HbA1c_category = case_when(
     HbA1c_level < 5.7 ~ "Normal",
     HbA1c_level >= 5.7 & HbA1c_level < 6.5 ~ "Prediabetes",
     HbA1c_level >= 6.5 ~ "Diabetes",
@@ -103,15 +103,15 @@ HbA1c_by_gender <- diabetes_dataset %>% filter(gender != 'Other') %>%
 # here we print out our mutated dataset to make a comparison of the original.
 HbA1c_by_gender
 
-# in this section we want our stack bar to follow a certain order, we want Normal at the top, Prediabetes at the middle, and Diabetes at the bottom. To do this we will mutate our diabetes_category column to an ordered categorical variable with the use of the factor function and the levels argument helps to set the order we want.
+# in this section we want our stack bar to follow a certain order, we want Normal at the top, Prediabetes at the middle, and Diabetes at the bottom. To do this we will mutate our HbA1c_category column to an ordered categorical variable with the use of the factor function, the levels argument helps to set the order we want.
 HbA1c_by_gender <- HbA1c_by_gender %>%
-  mutate(diabetes_category = factor(diabetes_category, levels = c("Normal", "Prediabetes", "Diabetes")))
+  mutate(HbA1c_category = factor(HbA1c_category, levels = c("Normal", "Prediabetes", "Diabetes")))
 
 # now we will plot a stack bar using ggplot. Before that we will change the name of our data set to 'Interactive_mode' that way we can easily incorporate our data set to ggplotly. The scale_fill_manual function is used to manually assign colors to the different categories.
-interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = diabetes_category)) +
+interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = HbA1c_category)) +
   geom_bar(position = "stack") +
   scale_fill_manual(values = c("Normal" = "cornsilk2", "Prediabetes" = "darkkhaki", "Diabetes" = "darkgoldenrod")) +
-  labs(title = "Male vs. Female HbA1c Levels",
+  labs(title = "Male vs. Female HbA1c evels",
        x = "Gender",
        y = "Count",
        fill = "Category") +
