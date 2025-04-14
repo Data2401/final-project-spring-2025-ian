@@ -103,14 +103,14 @@ HbA1c_by_gender <- diabetes_dataset %>% filter(gender != 'Other') %>%
 # here we print out our mutated dataset to make a comparison of the original.
 HbA1c_by_gender
 
-# in this section we want our stack bar to follow a certain order, we want Diabetes at the top, Prediabetes at the middle, and Normal at the bottom. To do this we will mutate our diabetes_category column to an ordered categorical variable with the use of the factor function and the levels argument helps to set the order we want.
+# in this section we want our stack bar to follow a certain order, we want Normal at the top, Prediabetes at the middle, and Diabetes at the bottom. To do this we will mutate our diabetes_category column to an ordered categorical variable with the use of the factor function and the levels argument helps to set the order we want.
 HbA1c_by_gender <- HbA1c_by_gender %>%
-  mutate(diabetes_category = factor(diabetes_category, levels = c("Diabetes", "Prediabetes", "Normal")))
+  mutate(diabetes_category = factor(diabetes_category, levels = c("Normal", "Prediabetes", "Diabetes")))
 
 # now we will plot a stack bar using ggplot. Before that we will change the name of our data set to 'Interactive_mode' that way we can easily incorporate our data set to ggplotly. The scale_fill_manual function is used to manually assign colors to the different categories.
 interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = diabetes_category)) +
   geom_bar(position = "stack") +
-  scale_fill_manual(values = c("Normal" = "#A6D854", "Prediabetes" = "#B3E2CD", "Diabetes" = "#FBB4AE")) +
+  scale_fill_manual(values = c("Normal" = "cornsilk2", "Prediabetes" = "darkkhaki", "Diabetes" = "darkgoldenrod")) +
   labs(title = "Male vs. Female HbA1c levels",
        x = "Gender",
        y = "Count",
