@@ -94,9 +94,9 @@ diabetes_dataset
 # from our original data set we create a new dataset called HbA1c_by_gender. For our new dataset we want to keep only the Male and Female gender and exclude Other, the way to do this is by filtering our gender column to not equal to 'Other'. We also create a new variable called HbA1c_category with the use of our mutate function. We use the case_when function to classify our HbA1c_level column and return different categories such as 'Normal', 'Prediabetes', and 'Diabetes'.
 HbA1c_by_gender <- diabetes_dataset %>% filter(gender != 'Other') %>% 
   mutate(HbA1c_category = case_when(
-    HbA1c_level < 5.7 ~ "Normal",
-    HbA1c_level >= 5.7 & HbA1c_level < 6.5 ~ "Prediabetes",
-    HbA1c_level >= 6.5 ~ "Diabetes",
+    HbA1c_level < 5.7 ~ "Normal < 5.7%",
+    HbA1c_level >= 5.7 & HbA1c_level < 6.5 ~ "Prediabetes 5.7% - 6.4%",
+    HbA1c_level >= 6.5 ~ "Diabetes ≥ 6.5%",
     TRUE ~ NA_character_  # handles unexpected cases that don’t match the defined conditions keeping missing values as NA
     ))
 
@@ -105,20 +105,20 @@ HbA1c_by_gender
 
 # in this section we want our stack bar to follow a certain order, we want Normal at the top, Prediabetes at the middle, and Diabetes at the bottom. To do this we will mutate our HbA1c_category column to an ordered categorical variable with the use of the factor function, the levels argument helps to set the order we want.
 HbA1c_by_gender <- HbA1c_by_gender %>%
-  mutate(HbA1c_category = factor(HbA1c_category, levels = c("Normal", "Prediabetes", "Diabetes")))
+  mutate(HbA1c_category = factor(HbA1c_category, levels = c("Normal < 5.7%", "Prediabetes 5.7% - 6.4%", "Diabetes ≥ 6.5%")))
 
 # now we will plot a stack bar using ggplot. Before that we will change the name of our data set to 'Interactive_mode' that way we can easily incorporate our data set to ggplotly. The scale_fill_manual function is used to manually assign colors to the different categories.
 interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = HbA1c_category)) +
   geom_bar(position = "stack") +
-  scale_fill_manual(values = c("Normal" = "cornsilk2", "Prediabetes" = "darkkhaki", "Diabetes" = "darkgoldenrod")) +
-  labs(title = "Male vs. Female HbA1c evels",
+  scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk2", "Prediabetes 5.7% - 6.4%" = "darkkhaki", "Diabetes ≥ 6.5%" = "darkgoldenrod")) +
+  labs(title = "Male vs. Female HbA1c Levels",
        x = "Gender",
        y = "Count",
-       fill = "Category") +
+       fill = "HbA1c Category") +
   theme_classic()  +
   theme(plot.title = element_text(hjust = 0.5)) # this code adjusts the tittle to the middle
 
-# by using ggplotly we transform our ggplot into an interactive plot. We are able to see the count, gender, and diabetes_category of any stack bar.
+# by using ggplotly we transform our ggplot into an interactive plot. When approaching the table we are able to see the count, gender, and HbA1c_category for any of the stacked bars.
 ggplotly(interactive_mode)
 ```
 
