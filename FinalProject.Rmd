@@ -111,7 +111,7 @@ HbA1c_by_gender <- HbA1c_by_gender %>%
 interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = diabetes_category)) +
   geom_bar(position = "stack") +
   scale_fill_manual(values = c("Normal" = "cornsilk2", "Prediabetes" = "darkkhaki", "Diabetes" = "darkgoldenrod")) +
-  labs(title = "Male vs. Female HbA1c levels",
+  labs(title = "Male vs. Female HbA1c Levels",
        x = "Gender",
        y = "Count",
        fill = "Category") +
