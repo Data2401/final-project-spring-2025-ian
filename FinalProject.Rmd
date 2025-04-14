@@ -114,7 +114,7 @@ interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = diabetes_c
   labs(title = "Male vs. Female HbA1c levels",
        x = "Gender",
        y = "Count",
-       fill = "category") +
+       fill = "Category") +
   theme_classic()  +
   theme(plot.title = element_text(hjust = 0.5)) # this code adjusts the tittle to the middle
 
