@@ -97,7 +97,7 @@ HbA1c_by_gender <- diabetes_dataset %>% filter(gender != 'Other') %>%
     HbA1c_level < 5.7 ~ "Normal",
     HbA1c_level >= 5.7 & HbA1c_level < 6.5 ~ "Prediabetes",
     HbA1c_level >= 6.5 ~ "Diabetes",
-    TRUE ~ NA_character_  # handles unexpected cases that don’t match the defined conditions keeping missing values as NA in the diabetes_category
+    TRUE ~ NA_character_  # handles unexpected cases that don’t match the defined conditions keeping missing values as NA
     ))
 
 # here we print out our mutated dataset to make a comparison of the original.
