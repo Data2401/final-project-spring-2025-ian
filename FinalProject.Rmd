@@ -8,10 +8,8 @@ date: "2025-04-10"
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggplot2)
-<<<<<<< HEAD
 library(plotly)
-=======
->>>>>>> b3044008c2d72b04c119e191e5f3350cf65a433d
+
 ```
 
 ## R Markdown
@@ -23,11 +21,9 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r Loading in Data}
 library(readr)
 diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
-<<<<<<< HEAD
 
-=======
+
 view(diabetes_dataset)
->>>>>>> b3044008c2d72b04c119e191e5f3350cf65a433d
 ```
 
 ## Including Plots
