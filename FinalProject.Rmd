@@ -133,7 +133,7 @@ diabetes_dataset %>% filter(gender == 'Other') %>% tally  # 18
 ```
 
 ```{r}
-diabetes_dataset %>% ggplot(aes(x=bmi), as.character.factor()) + geom_point()
+diabetes_dataset %>% ggplot(aes(x=bmi)) + geom_point()
 ```
 
 
