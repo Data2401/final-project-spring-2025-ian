@@ -132,24 +132,12 @@ diabetes_dataset %>% filter(gender == 'Male') %>% tally   # 41,430
 diabetes_dataset %>% filter(gender == 'Other') %>% tally  # 18	
 ```
 
+```{r}
+diabetes_dataset %>% ggplot(aes(x=bmi), as.character.factor()) + geom_point()
+```
 
 
 
 ```{r}
-diabetes_dataset %>% ggplot(aes(x=bmi,y=age, color = gender, alpha = .1)) + geom_point() + facet_wrap(~hypertension)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
