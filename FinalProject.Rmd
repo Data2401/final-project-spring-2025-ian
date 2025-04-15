@@ -116,6 +116,18 @@ interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = HbA1c_cate
   theme(plot.title = element_text(hjust = 0.5)) # this code adjusts the tittle to the middle
 
 ggplotly(interactive_mode)
+
+library(ggplot2)
+
+ggplot(diabetes_dataset, aes(x = bmi, fill = factor(hypertension))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("blue", "red"), labels = c("No Hypertension", "Hypertension")) +
+  labs(title = "BMI Distribution by Hypertension Status",
+       x = "BMI",
+       y = "Density",
+       fill = "Hypertension") +
+  theme_minimal()
+
 ```
 
 Here I'll leave extra info for you guys regarding the gender column of the original data set
@@ -123,6 +135,20 @@ Here I'll leave extra info for you guys regarding the gender column of the origi
 diabetes_dataset %>% filter(gender == 'Female') %>% tally # 58,552 we have 17,122 more females than males in this data set
 diabetes_dataset %>% filter(gender == 'Male') %>% tally   # 41,430	
 diabetes_dataset %>% filter(gender == 'Other') %>% tally  # 18	
+```
+```{r}
+#BMI (Body Mass Index) is closely related to hypertension. Studies show that obesity is a major risk factor for high blood pressure, with around 65% to 78% of primary hypertension cases being linked to excess weigh
+
+ggplot(diabetes_dataset, aes(x = hypertension, fill = bmi)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "BMI Distribution by Hypertension Status", x = "BMI", y = "Hypertension")
+
+diabetes_dataset %>% select(hypertension) %>%  filter(hypertension != 1 & 0)
+
+hypertension_vs_bmi <- HbA1c_by_gender %>%
+  mutate(hypertension_vs_bmi = factor(hypertension, levels = c("yes", "no")))
+hypertension_vs_bmi
+ggplot(hypertension_vs_bmi) + geom_density(aes(x = bmi , color = hypertension),alpha = .6)
 ```
 
 
