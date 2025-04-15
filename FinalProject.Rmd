@@ -21,9 +21,13 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r Loading in Data}
 library(readr)
 diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
+<<<<<<< HEAD
+View(diabetes_dataset)
+=======
 
 
 view(diabetes_dataset)
+>>>>>>> f3928253d9b1ba91ea7e6dcd4de077de1cb98299
 ```
 
 ## Including Plots
@@ -44,7 +48,12 @@ female_data %>% filter(HbA1c_level <= 5.7) %>% tally()
 male_data %>% filter(HbA1c_level <= 5.7) %>% tally()
 
 # count of people (male and female) with both heart disease and diabetes
+<<<<<<< HEAD
+diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1)
+diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1) %>% tally()
+=======
 diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1) # this is saying how many rows are in the data group and tally ***
+>>>>>>> f3928253d9b1ba91ea7e6dcd4de077de1cb98299
 # count of overweight people based on bmi who have heart disease
 diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1)
 diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1) 
@@ -68,6 +77,11 @@ male_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
 # the assumption is that overweight people are more likely to have diabetes. Below is the code and tally of WOMEN who are overweight in terms of bmi and DONT have diabetes
 female_data %>% filter(bmi >= 30, diabetes == 0)
 female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
+<<<<<<< HEAD
+
+ 
+=======
+>>>>>>> f3928253d9b1ba91ea7e6dcd4de077de1cb98299
 ```
 
 
@@ -112,7 +126,7 @@ HbA1c_by_gender <- HbA1c_by_gender %>%
 interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = HbA1c_category)) +
   geom_bar(position = "stack") +
   scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk2", "Prediabetes 5.7% - 6.4%" = "darkkhaki", "Diabetes ≥ 6.5%" = "darkgoldenrod")) +
-  labs(title = "Male vs. Female HbA1c Levels",
+  labs(title = "Male vs. Female Blood Sugar Levels(HbA1c)",
        x = "Gender",
        y = "Count",
        fill = "HbA1c Category") +
@@ -153,6 +167,10 @@ hypertension_vs_bmi <- HbA1c_by_gender %>%
   mutate(hypertension_vs_bmi = factor(hypertension, levels = c("yes", "no")))
 hypertension_vs_bmi
 ggplot(hypertension_vs_bmi) + geom_density(aes(x = bmi , color = hypertension),alpha = .6)
+```
+
+```{r}
+#diabetes_dataset %>% ggplot(aes(x=bmi)) + geom_point()
 ```
 
 
@@ -200,9 +218,6 @@ Now we can graph the relationship between
 print('hello world')
 
 ```
-
-
-
 
 
 
