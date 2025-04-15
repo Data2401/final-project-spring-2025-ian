@@ -6,17 +6,11 @@ date: "2025-04-10"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
 library(tidyverse)
 library(ggplot2)
-
 ```
 
 ## R Markdown
-
-
-
-
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
@@ -25,7 +19,7 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r}
 library(readr)
 diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
-View(diabetes_prediction_dataset)
+view(diabetes_dataset)
 ```
 
 ## Including Plots
@@ -45,11 +39,8 @@ female_data
 female_data %>% filter(HbA1c_level <= 5.7) %>% tally()
 male_data %>% filter(HbA1c_level <= 5.7) %>% tally()
 
-
-
-
 # count of people (male and female) with both heart disease and diabetes
-diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1)
+diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1) # this is saying how many rows are in the data group and tally ***
 # count of overweight people based on bmi who have heart disease
 diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1)
 diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1) 
@@ -60,7 +51,7 @@ male_data %>% filter(bmi >= 30, diabetes == 1)
 male_data %>% filter(bmi >= 30, diabetes == 1) %>% tally()
 # "obese women" with bmi higher than 30 and that have diabetes (tally on second line)
 female_data %>% filter(bmi >= 30, diabetes == 1)
-female_data %>% filter(bmi >= 30, diabetes == 1) %>% tally()
+female_data %>% filter(bmi >= 30, diabetes == 1) %>% tally() # grouped by gender ***
 # "underweight men"  with bmi lower than 19 and that have diabetes (tally on second line)
 male_data %>% filter(bmi <= 19, diabetes == 1)
 male_data %>% filter(bmi <= 19, diabetes == 1) %>% tally()
@@ -73,25 +64,34 @@ male_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
 # the assumption is that overweight people are more likely to have diabetes. Below is the code and tally of WOMEN who are overweight in terms of bmi and DONT have diabetes
 female_data %>% filter(bmi >= 30, diabetes == 0)
 female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
- 
 ```
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
+In this section we want to display a stack bar showing how HbA1c levels (average blood sugar levels) can classify Males and Females in different categories such as Normal, Prediabetes, and Diabetes. From this plot we gain insight on how the distribution of Normal, Prediabetes, and Diabetes varies between both genders.
+
+First we load our libraries such as dplyr for data manipulation, ggplot2 for data visualization, and plotly to make our plot interactive. Then we we display our original dataset. 
+
+
+From our original data set we create a new dataset called HbA1c_by_gender. For our new dataset we want to keep only the Male and Female gender and exclude Other, the way to do this is by filtering our gender column to not equal to 'Other'. We also create a new variable called HbA1c_category with the use of our mutate function. We use the case_when function to classify our HbA1c_level column and return different categories such as 'Normal', 'Prediabetes', and 'Diabetes'.
+
+Then we print out our mutated dataset to make a comparison of the original.
+
+In the next section we want our stack bar to follow a certain order, we want Normal at the top, Prediabetes at the middle, and Diabetes at the bottom. To do this we will mutate our HbA1c_category column to an ordered categorical variable with the use of the factor function, the levels argument helps to set the order we want.
+
+
+Next, we will plot a stack bar using ggplot. Before that we will change the name of our data set to 'Interactive_mode' that way we can easily incorporate our data set to ggplotly. The scale_fill_manual function is used to manually assign colors to the different categories.
+
+Lastly, with the use of plotly we transform our plot into an interactive plot. When approaching the table we are able to see the count, gender, and HbA1c_category for any of the stacked bars.
 
 ```{r}
-# in this section we want to display a stack bar showing how HbA1c levels (average blood sugar levels) can classify Males and Females in different categories such as Normal, Prediabetes, and Diabetes. From this plot we gain insight on how the distribution of Normal, Prediabetes, and Diabetes varies between both genders.
-
-# first we load our libraries such as dplyr for data manipulation, ggplot2 for data visualization, and plotly to make our plot interactive.
 library(dplyr)
 library(ggplot2)
 library(plotly)
 
-# here we display our original dataset
 diabetes_dataset
 
-# from our original data set we create a new dataset called HbA1c_by_gender. For our new dataset we want to keep only the Male and Female gender and exclude Other, the way to do this is by filtering our gender column to not equal to 'Other'. We also create a new variable called HbA1c_category with the use of our mutate function. We use the case_when function to classify our HbA1c_level column and return different categories such as 'Normal', 'Prediabetes', and 'Diabetes'.
 HbA1c_by_gender <- diabetes_dataset %>% filter(gender != 'Other') %>% 
   mutate(HbA1c_category = case_when(
     HbA1c_level < 5.7 ~ "Normal < 5.7%",
@@ -100,14 +100,11 @@ HbA1c_by_gender <- diabetes_dataset %>% filter(gender != 'Other') %>%
     TRUE ~ NA_character_  # handles unexpected cases that don’t match the defined conditions keeping missing values as NA
     ))
 
-# here we print out our mutated dataset to make a comparison of the original.
 HbA1c_by_gender
 
-# in this section we want our stack bar to follow a certain order, we want Normal at the top, Prediabetes at the middle, and Diabetes at the bottom. To do this we will mutate our HbA1c_category column to an ordered categorical variable with the use of the factor function, the levels argument helps to set the order we want.
 HbA1c_by_gender <- HbA1c_by_gender %>%
   mutate(HbA1c_category = factor(HbA1c_category, levels = c("Normal < 5.7%", "Prediabetes 5.7% - 6.4%", "Diabetes ≥ 6.5%")))
 
-# now we will plot a stack bar using ggplot. Before that we will change the name of our data set to 'Interactive_mode' that way we can easily incorporate our data set to ggplotly. The scale_fill_manual function is used to manually assign colors to the different categories.
 interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = HbA1c_category)) +
   geom_bar(position = "stack") +
   scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk2", "Prediabetes 5.7% - 6.4%" = "darkkhaki", "Diabetes ≥ 6.5%" = "darkgoldenrod")) +
@@ -118,12 +115,11 @@ interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = HbA1c_cate
   theme_classic()  +
   theme(plot.title = element_text(hjust = 0.5)) # this code adjusts the tittle to the middle
 
-# by using ggplotly we transform our ggplot into an interactive plot. When approaching the table we are able to see the count, gender, and HbA1c_category for any of the stacked bars.
 ggplotly(interactive_mode)
 ```
 
+Here I'll leave extra info for you guys regarding the gender column of the original data set
 ```{r}
-# here I'll leave extra info for you guys regarding the gender column of the original data set
 diabetes_dataset %>% filter(gender == 'Female') %>% tally # 58,552 we have 17,122 more females than males in this data set
 diabetes_dataset %>% filter(gender == 'Male') %>% tally   # 41,430	
 diabetes_dataset %>% filter(gender == 'Other') %>% tally  # 18	
