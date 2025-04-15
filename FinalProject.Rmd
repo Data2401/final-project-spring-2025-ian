@@ -8,6 +8,8 @@ date: "2025-04-10"
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggplot2)
+library(plotly)
+
 ```
 
 ## R Markdown
@@ -16,9 +18,11 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r}
+```{r Loading in Data}
 library(readr)
 diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
+
+
 view(diabetes_dataset)
 ```
 
@@ -153,16 +157,49 @@ ggplot(hypertension_vs_bmi) + geom_density(aes(x = bmi , color = hypertension),a
 
 
 
+# Smokers go brrr
+In the smoking data there are 6 unique values
 
+   1) Never: Has Never smoked
+   2) Not current: Has smoked but is not currently smoking
+   3) Former: Has quit smoking (abstained for longer than)
+   4) Current: Is currently a smoker
+   5) Ever: Has ever smoked regardless of current smoking status
+   6) No Info: No smoking history information available
+   
+The total amount of people who fall into each category is as follows;
 
+   1) Never: 35095
+   2) Not current: 6447
+   3) Former: 9352
+   4) Current: 9286
+   5) Ever: 4004
+   6) No Info: 35816
+   
+There is quite a sizable amount of people in the No info category.
 
+The total number of people in the dataset is `r nrow(diabetes_dataset)`. 
+To help clean up the data, we can filter 'No Info' people out. When we do that we get `r nrow(diabetes_dataset %>% filter(smoking_history != 'No Info'))`.
+```{r Cleaning smoking data}
 
+# Figure out the unique categories of smoking history 
+unique(diabetes_dataset$smoking_history)
 
+# Count amount of people who belong to each unique category
+diabetes_dataset %>% group_by(smoking_history) %>% summarise(total_people = n())
 
+smoking_diabetes_dataset <- diabetes_dataset %>% 
+  filter(smoking_history != 'No Info') %>%  
+  group_by(smoking_history, diabetes) %>%  
+  summarise(total = n())
+```
+Now we can graph the relationship between
 
+```{r Plotting data}
 
+print('hello world')
 
-
+```
 
 
 
