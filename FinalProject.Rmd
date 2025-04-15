@@ -9,6 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(ggplot2)
+library(plotly)
 
 ```
 
@@ -25,7 +26,7 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r}
 library(readr)
 diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
-View(diabetes_prediction_dataset)
+View(diabetes_dataset)
 ```
 
 ## Including Plots
@@ -50,6 +51,7 @@ male_data %>% filter(HbA1c_level <= 5.7) %>% tally()
 
 # count of people (male and female) with both heart disease and diabetes
 diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1)
+diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1) %>% tally()
 # count of overweight people based on bmi who have heart disease
 diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1)
 diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1) 
@@ -73,6 +75,7 @@ male_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
 # the assumption is that overweight people are more likely to have diabetes. Below is the code and tally of WOMEN who are overweight in terms of bmi and DONT have diabetes
 female_data %>% filter(bmi >= 30, diabetes == 0)
 female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
+
  
 ```
 
@@ -111,7 +114,7 @@ HbA1c_by_gender <- HbA1c_by_gender %>%
 interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = HbA1c_category)) +
   geom_bar(position = "stack") +
   scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk2", "Prediabetes 5.7% - 6.4%" = "darkkhaki", "Diabetes ≥ 6.5%" = "darkgoldenrod")) +
-  labs(title = "Male vs. Female HbA1c Levels",
+  labs(title = "Male vs. Female Blood Sugar Levels(HbA1c)",
        x = "Gender",
        y = "Count",
        fill = "HbA1c Category") +
@@ -132,6 +135,8 @@ diabetes_dataset %>% filter(gender == 'Other') %>% tally  # 18
 
 
 
+```{r}
+diabetes_dataset %>% ggplot(aes(x=bmi,y=age, color = gender, alpha = .1)) + geom_point() + facet_wrap(~hypertension)
 
 
 
