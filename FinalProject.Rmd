@@ -21,13 +21,8 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r Loading in Data}
 library(readr)
 diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
-<<<<<<< HEAD
 View(diabetes_dataset)
-=======
 
-
-view(diabetes_dataset)
->>>>>>> f3928253d9b1ba91ea7e6dcd4de077de1cb98299
 ```
 
 ## Including Plots
@@ -48,12 +43,10 @@ female_data %>% filter(HbA1c_level <= 5.7) %>% tally()
 male_data %>% filter(HbA1c_level <= 5.7) %>% tally()
 
 # count of people (male and female) with both heart disease and diabetes
-<<<<<<< HEAD
+
 diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1)
-diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1) %>% tally()
-=======
-diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1) # this is saying how many rows are in the data group and tally ***
->>>>>>> f3928253d9b1ba91ea7e6dcd4de077de1cb98299
+diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1) %>% tally() # this is saying how many rows are in the data group and tally ***
+
 # count of overweight people based on bmi who have heart disease
 diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1)
 diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1) 
@@ -77,11 +70,7 @@ male_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
 # the assumption is that overweight people are more likely to have diabetes. Below is the code and tally of WOMEN who are overweight in terms of bmi and DONT have diabetes
 female_data %>% filter(bmi >= 30, diabetes == 0)
 female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
-<<<<<<< HEAD
 
- 
-=======
->>>>>>> f3928253d9b1ba91ea7e6dcd4de077de1cb98299
 ```
 
 
