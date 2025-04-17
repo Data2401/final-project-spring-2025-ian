@@ -12,13 +12,7 @@ library(plotly)
 
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r Loading in Data}
+```{r Loading in Data, echo=FALSE, message=FALSE}
 library(readr)
 diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
 #View(diabetes_dataset)
@@ -45,31 +39,10 @@ male_data %>% filter(HbA1c_level <= 5.7) %>% tally()
 # count of people (male and female) with both heart disease and diabetes
 
 diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1)
-diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1) %>% tally() # this is saying how many rows are in the data group and tally ***
-
-# count of overweight people based on bmi who have heart disease
-diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1)
-diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1) 
+diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1) %>% tally()
 
 
-# "obese men" with bmi higher than 30 and that have diabetes (tally on second line)
-male_data %>% filter(bmi >= 30, diabetes == 1)
-male_data %>% filter(bmi >= 30, diabetes == 1) %>% tally()
-# "obese women" with bmi higher than 30 and that have diabetes (tally on second line)
-female_data %>% filter(bmi >= 30, diabetes == 1)
-female_data %>% filter(bmi >= 30, diabetes == 1) %>% tally() # grouped by gender ***
-# "underweight men"  with bmi lower than 19 and that have diabetes (tally on second line)
-male_data %>% filter(bmi <= 19, diabetes == 1)
-male_data %>% filter(bmi <= 19, diabetes == 1) %>% tally()
-# "underweight women"  with bmi lower than 19 and that have diabetes (tally on second line)
-female_data %>% filter(bmi <= 19, diabetes == 1)
-female_data %>% filter(bmi <= 19, diabetes == 1) %>% tally()
-# the assumption is that overweight people are more likely to have diabetes. Below is the code and tally of MEN who are overweight in terms of bmi and DONT have diabetes
-male_data %>% filter(bmi >= 30, diabetes == 0)
-male_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
-# the assumption is that overweight people are more likely to have diabetes. Below is the code and tally of WOMEN who are overweight in terms of bmi and DONT have diabetes
-female_data %>% filter(bmi >= 30, diabetes == 0)
-female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
+
 
 ```
 
@@ -186,7 +159,7 @@ diabetes_dataset %>% filter(gender == 'Other') %>% tally  # 18
 
 One of the more interesting bits of data is that there are individuals that have an a1c of over 6.5 yet are not considered diabetic. 
 
-```{r hbA1C}
+```{r hbA1C, echo=FALSE}
 
 A1C_vs_Glucose <- diabetes_dataset %>%  ggplot(aes(x = blood_glucose_level , y = HbA1c_level, color = as.factor(diabetes))) + geom_point() + geom_jitter()
 
@@ -233,11 +206,123 @@ smoking_diabetes_dataset <- diabetes_dataset %>%
   group_by(smoking_history, diabetes) %>%  
   summarise(total = n())
 ```
+```{r, echo=FALSE}
+library(dplyr)
+library(ggplot2)
+library(tibble)
 
-Now we can graph the relationship between
+# Get counts
+male_count   <- male_data   %>% filter(bmi >= 30, diabetes == 0) %>% tally() %>% pull(n)
+female_count <- female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally() %>% pull(n)
+total_count  <- male_count + female_count
 
-```{r Plotting smoking data}
+# Create data frame with percentages
+df <- tibble(
+  group = c("Male", "Female"),
+  count = c(male_count, female_count)
+) %>%
+  mutate(
+    percent = count / total_count * 100,
+    label = paste0(round(percent, 1), "%")
+  )
 
-print('hello world')
+# Plot
+ggplot(df, aes(x = group, y = count, fill = group)) +
+  geom_col(show.legend = FALSE) +
+  geom_text(aes(label = label), vjust = -0.5, size = 5) +
+  labs(
+    title = "Suspcted 'overweight' people without diabetes",
+    x = "",
+    y = "Number of Subjects"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme()
 
 ```
+
+
+```{r, echo=FALSE}
+library(dplyr)
+library(ggplot2)
+
+# Tally data
+obese_men <- male_data %>% filter(bmi >= 30, diabetes == 1) %>% tally() %>% pull(n)
+underweight_men <- male_data %>% filter(bmi <= 19, diabetes == 1) %>% tally() %>% pull(n)
+obese_women <- female_data %>% filter(bmi >= 30, diabetes == 1) %>% tally() %>% pull(n)
+underweight_women <- female_data %>% filter(bmi <= 19, diabetes == 1) %>% tally() %>% pull(n)
+
+# Create data frame
+plot_data <- data.frame(
+  Category = rep(c("Obese", "Underweight"), each = 2),
+  Sex = c("Men", "Women", "Men", "Women"),
+  Count = c(obese_men, obese_women, underweight_men, underweight_women)
+)
+
+# Calculate percentage within each category
+plot_data <- plot_data %>%
+  group_by(Category) %>%
+  mutate(Percentage = Count / sum(Count) * 100)
+
+# Plot
+ggplot(plot_data, aes(x = Category, y = Count, fill = Sex)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
+            position = position_dodge(width = 0.9), 
+            vjust = -0.5, size = 4) +
+  labs(
+    title = "Diabetic Individuals by Weight Category and Sex",
+    y = "Count",
+    x = "BMI Category"
+  ) +
+  scale_fill_manual(values = c("Men" = "#1f77b4", "Women" = "#ff7f0e")) +
+  theme_minimal()
+
+```
+
+```{r, echo=FALSE}
+library(dplyr)
+library(ggplot2)
+
+# Data prep
+bmi_heart_gender <- diabetes_dataset %>%
+  filter(heart_disease == 1) %>%
+  mutate(
+    bmi_category = case_when(
+      bmi <= 19 ~ "Underweight",
+      bmi >= 30 ~ "Overweight",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(bmi_category)) %>%
+  group_by(gender, bmi_category) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  group_by(gender) %>%
+  mutate(percentage = round(100 * count / sum(count), 1))
+
+# Make sure the bmi_category is an ordered factor so the line connects correctly
+bmi_heart_gender$bmi_category <- factor(bmi_heart_gender$bmi_category,
+                                        levels = c("Underweight", "Overweight"))
+
+# Dot + Line plot
+ggplot(bmi_heart_gender, aes(x = bmi_category, y = count, group = gender, color = gender)) +
+  geom_line(aes(group = gender), position = position_dodge(width = 0.5), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.5)) +
+  geom_text(aes(label = paste0(count, " (", percentage, "%)")),
+            vjust = -1,
+            position = position_dodge(width = 0.5)) +
+  labs(
+    title = "Heart Disease Cases by Gender and BMI Category",
+    x = "BMI Category",
+    y = "Count of People with Heart Disease",
+    color = "Gender"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r}
+
+
+```
+
