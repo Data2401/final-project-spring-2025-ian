@@ -156,6 +156,8 @@ The distribution shape is different—for example, if one violin is wider at hig
 
 Outliers or extreme values might appear as small bulges or extended tails at the ends of the violins, showing individuals with very high or low BMI.
 
+The proper way to read the following chart is to notice the "thickness" of each distribution. When the graph expands wider, that means 
+
 ```{r, echo=FALSE}
 overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE)
 
