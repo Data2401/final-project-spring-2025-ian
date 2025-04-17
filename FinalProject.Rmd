@@ -81,6 +81,143 @@ library(knitr)
 kable(head(diabetes_dataset, 6), caption = "6 rows")
 ```
 
+```{r}
+diabetes_dataset
+
+```
+```{r}
+library(dplyr)
+library(ggplot2)
+
+#diabetes_dataset %>%
+  #summarize(min_age = min(age, na.rm = TRUE), 
+            #max_age = max(age, na.rm = TRUE))
+#diabetes_dataset %>% select(age, diabetes) %>% filter(age >= 3)
+
+# diabetes_dataset %>% filter(age == 80, diabetes == 1) 
+#diabetes_dataset %>% filter(age <= 2, diabetes == 1)
+
+
+library(dplyr)
+library(ggplot2)
+library(scales)
+
+diabetes_dataset %>%
+  filter(age >= 3 & age <= 80) %>%  
+  count(age, diabetes) %>%  
+  group_by(age) %>%
+  mutate(percent = n / sum(n) * 100) %>%  # Convert counts to percentages
+  ggplot(aes(x = factor(age), y = percent, fill = factor(diabetes))) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +  # Stacked bars for percentages
+  scale_x_discrete(breaks = seq(3, 80, by = 7)) +  
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +  # Format y-axis as percentages
+  scale_fill_manual(values = c("blue", "red"), labels = c("No Diabetes", "Diabetes")) +
+  labs(title = "Percentage of Individuals with Diabetes Across Age Groups",
+       x = "Age", y = "Percentage", fill = "Diabetes Status") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+library(dplyr)
+library(ggplot2)
+library(scales)
+
+diabetes_dataset %>%
+  filter(age >= 3 & age <= 80) %>%  # Ensure ages 3-80 are included
+  select(age, diabetes, heart_disease) %>%
+  pivot_longer(cols = c(diabetes, heart_disease), names_to = "condition", values_to = "status") %>%
+  filter(status == 1) %>%  # Keep only cases where the condition is present
+  ggplot(aes(x = age, fill = condition)) +
+  geom_density(alpha = 0.6, adjust = 1.5) +
+  scale_x_continuous(limits = c(3, 80), breaks = seq(3, 80, by = 7)) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +  # Show density as percentages
+  scale_fill_manual(values = c("red", "purple"), labels = c("Diabetes", "Heart Disease")) +
+  labs(title = "Density of Diabetes & Heart Disease Across Age Groups",
+       x = "Age", y = "Percentage Density", fill = "Condition") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+library(dplyr)
+library(ggplot2)
+
+diabetes_dataset %>%
+  filter(age >= 3 & age <= 80) %>%
+  select(age, diabetes, heart_disease) %>% filter(diabetes == 1 & heart_disease == 1) %>% 
+  pivot_longer(cols = c(diabetes, heart_disease), names_to = "condition", values_to = "status") %>%
+  filter(status == 1) %>%
+  ggplot(aes(x = age, y = condition, color = condition)) +
+  geom_jitter(alpha = 0.6, width = 0.2, height = 0.2) +  # Adds jitter to spread points
+  scale_x_continuous(limits = c(3, 80), breaks = seq(3, 80, by = 7)) +
+  scale_color_manual(values = c("red", "purple"), labels = c("Diabetes", "Heart Disease")) +
+  labs(title = "Scatter Plot of Diabetes & Heart Disease Across Age Groups",
+       x = "Age", y = "Condition", color = "Condition") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+diabetes_dataset %>%
+  filter(age >= 3 & age <= 80, diabetes == 1, heart_disease == 1) %>%
+  ggplot(aes(x = factor(age_group), y = bmi, fill = age_group)) +
+  geom_boxplot() +
+  labs(title = "BMI Distribution Across Age Groups (Diabetes & Heart Disease)",
+       x = "Age Group",
+       y = "BMI",
+       fill = "Age Group") +
+  theme_minimal()
+
+diabetes_dataset %>%
+  filter(age >= 3 & age <= 80, diabetes == 1, heart_disease == 1) %>%
+  ggplot(aes(x = blood_glucose_level, fill = factor(age_group))) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~ age_group, scales = "free") +
+  labs(title = "Density of Blood Glucose Levels in Diabetes & Heart Disease Patients",
+       x = "Blood Glucose Level",
+       y = "Density",
+       fill = "Age Group") +
+  theme_minimal()
+
+```
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+diabetes_dataset <- diabetes_dataset %>%
+  mutate(age_group = cut(age, breaks = seq(20, 80, by = 10), labels = c("20-30", "30-40", "40-50", "50-60", "60-70", "70-80")))
+diabetes_dataset <- diabetes_dataset %>%
+  mutate(glucose_category = cut(blood_glucose_level, 
+                               breaks = c(50, 99, 125, 200), 
+                               labels = c("Normal", "Pre-Diabetic", "Diabetic")))
+diabetes_dataset %>%
+  ggplot(aes(x = age_group, y = glucose_category)) +
+  geom_bin2d() +
+  scale_fill_gradient(low = "lightblue", high = "darkblue") +
+  labs(title = "Grouped Density Heat Map: Age vs. Blood Glucose",
+       x = "Age Group",
+       y = "Glucose Category") +
+  theme_minimal()
+
+
+```
+
+
+
+```{r}
+diabetes_dataset %>%
+  count(age_group, glucose_category) %>%  # Counts occurrences per group
+  ggplot(aes(x = age_group, y = glucose_category, size = n)) +
+  geom_point(aes(color = n)) +
+  scale_color_gradient(low = "lightblue", high = "darkblue") +
+  labs(title = "Bubble Plot: Age Groups vs. Blood Glucose Categories",
+       x = "Age Group",
+       y = "Glucose Category",
+       size = "Count") +
+  theme_minimal()
+
+```
+
+
 ### Male vs. Female Blood Sugar Levels (HbA1c)
 
 ```{r, echo=FALSE}
@@ -120,10 +257,6 @@ Overall, blood sugar regulation patterns appear fairly balanced between genders,
 **Similar Prevalence of Prediabetes**  
 The proportion of individuals classified as having prediabetes (HbA1c 5.7% - 6.4%) is nearly identical between males (**41.3%**) and females (**41.4%**). This suggests no significant disparity.
 :::
-
-<div style="text-align: center;">
-<strong>Similar Prevalence of Prediabetes</strong> – The proportion of individuals classified as having prediabetes (HbA1c 5.7% - 6.4%) is nearly identical between males (41.3%) and females (41.4%). This indicates that prediabetes affects both genders at a comparable rate, suggesting no significant disparity.
-</div>
 
 
 ```{r, echo=FALSE}
