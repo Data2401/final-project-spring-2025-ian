@@ -122,9 +122,9 @@ HbA1c_counts_plotly <- ggplot(HbA1c_counts, aes(x = gender, y = n, fill = HbA1c_
   geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.1, alpha = 0.6) +
   geom_text(aes(label = paste0(round(percent, 1), "%")), 
             position = position_fill(vjust = 0.5)) +
-  scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk2", 
+  scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk", 
                                "Prediabetes 5.7% - 6.4%" = "darkkhaki", 
-                               "Diabetes ≥ 6.5%" = "darkgoldenrod")) +
+                               "Diabetes ≥ 6.5%" = "darkgoldenrod4")) +
   labs(title = "Male vs. Female Blood Sugar Levels (HbA1c)", 
        x = "Gender", y = "Proportion", fill = "HbA1c Category") +
   theme_classic() +
