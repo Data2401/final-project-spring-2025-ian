@@ -21,7 +21,7 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r Loading in Data}
 library(readr)
 diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
-View(diabetes_dataset)
+#View(diabetes_dataset)
 
 ```
 
@@ -74,11 +74,42 @@ female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
 ```
 
 
+```{r, echo=FALSE}
+library(knitr)
+#diabetes_dataset
+kable(head(diabetes_dataset, 10), caption = "Diabetes Dataset Sample First 10 Rows Only - Sample")
+```
 
-```{r}
+Similar Prevalence of Prediabetes – The proportion of individuals categorized as having prediabetes (HbA1c 5.7% - 6.4%) is almost identical between males (41.3%) and females (41.4%). This suggests that prediabetes affects both genders at nearly the same rate.
+
+Slightly Higher Diabetes Rates Among Males – More males (21.6%) fall into the diabetes (HbA1c ≥ 6.5%) category compared to females (20.2%). While the difference is small, it might indicate that men have a slightly higher risk of diabetes in this dataset.
+
+Females Have a Slightly Higher Proportion of Normal Blood Sugar Levels – More females (38.4%) fall into the normal blood sugar category (\<5.7%) compared to males (37.1%). This may indicate some slight protective factors or lifestyle differences in this group.
+
+Since more males are in the diabetes category, there could be gender-related risk factors worth exploring—such as diet, activity levels, or genetic predisposition.
+
+Overall, blood sugar regulation patterns appear fairly balanced between genders, but small differences suggest potential areas for further investigation.
+
+```{r, echo=FALSE}
 library(dplyr)
 library(ggplot2)
 library(plotly)
+library(knitr)
+
+HbA1c_by_gender <- diabetes_dataset %>% filter(gender != 'Other') %>% 
+  mutate(HbA1c_category = case_when(
+    HbA1c_level < 5.7 ~ "Normal < 5.7%",
+    HbA1c_level >= 5.7 & HbA1c_level < 6.5 ~ "Prediabetes 5.7% - 6.4%",
+    HbA1c_level >= 6.5 ~ "Diabetes ≥ 6.5%",
+    TRUE ~ NA_character_  # handles unexpected cases that don’t match the defined conditions keeping missing values as NA
+    ))
+
+HbA1c_by_gender <- HbA1c_by_gender %>%
+  mutate(HbA1c_category = factor(HbA1c_category, levels = c("Normal < 5.7%", "Prediabetes 5.7% - 6.4%", "Diabetes ≥ 6.5%")))
+
+# here we print out our mutated dataset to make a comparison of the original.
+#HbA1c_by_gender
+kable(head(HbA1c_by_gender, 10), caption = "Males vs. Females HbA1c Category Based on HbA1c Levels - Sample")
 
 # Compute percentages
 HbA1c_counts <- HbA1c_by_gender %>%
@@ -88,7 +119,7 @@ HbA1c_counts <- HbA1c_by_gender %>%
 
 # Create stacked bar plot with percentage labels
 HbA1c_counts_plotly <- ggplot(HbA1c_counts, aes(x = gender, y = n, fill = HbA1c_category)) +
-  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.2) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.1) +
   geom_text(aes(label = paste0(round(percent, 1), "%")), 
             position = position_fill(vjust = 0.5)) +
   scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk2", 
@@ -102,8 +133,7 @@ HbA1c_counts_plotly <- ggplot(HbA1c_counts, aes(x = gender, y = n, fill = HbA1c_
 ggplotly(HbA1c_counts_plotly)
 ```
 
-
-Shows the distribution of BMI values based on hypertension status. A violin plot is great for visualizing the distribution and density of BMI across hypertension categories, 
+Shows the distribution of BMI values based on hypertension status. A violin plot is great for visualizing the distribution and density of BMI across hypertension categories,
 
 Shape and width: The width of each "violin" represents the density of BMI values at different levels. Wider sections mean more individuals have that BMI, while narrower sections indicate fewer people at those values.
 
@@ -111,30 +141,28 @@ Comparison of distributions: The blue violin represents people without hypertens
 
 The horizontal line around 25 BMI: This marks the median BMI for each group. Since both violins have a horizontal line in roughly the same position, it suggests that the median BMI is around 25 for both hypertensive and non-hypertensive individuals.
 
-Density trends: If the violins have different thicknesses in certain BMI ranges, it tells you which BMI values are more or less common in each group.
-People with hypertension seem to have a higher BMI overall, but both groups share a similar median.
+Density trends: If the violins have different thicknesses in certain BMI ranges, it tells you which BMI values are more or less common in each group. People with hypertension seem to have a higher BMI overall, but both groups share a similar median.
 
 The distribution shape is different—for example, if one violin is wider at higher BMI values, it suggests that hypertension is more common among individuals with higher BMI.
 
 Outliers or extreme values might appear as small bulges or extended tails at the ends of the violins, showing individuals with very high or low BMI.
 
-```{r}
+```{r, echo=FALSE}
 overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE)
 
 BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = bmi, fill = factor(hypertension))) +
   geom_violin(alpha = 0.5) +
-  geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", size = 0.2) +
+  geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", linewidth = 0.2) +
   scale_fill_manual(values = c("cornflowerblue", "darkred"), labels = c("No Hypertension", "Hypertension")) +
   labs(title = "BMI Distribution by Hypertension Status",
        x = "Hypertension Status (0 = No, 1 = Yes)",
        y = "BMI",
        fill = "Hypertension") +
-  theme_minimal() +
+  theme_light() +
   theme(plot.title = element_text(hjust = 0.5))
 
 ggplotly(BMI_distribution)
 ```
-
 
 Here I'll leave extra info for you guys regarding the gender column of the original data set
 
@@ -144,24 +172,6 @@ diabetes_dataset %>% filter(gender == 'Male') %>% tally   # 41,430
 diabetes_dataset %>% filter(gender == 'Other') %>% tally  # 18	
 ```
 
-```{r}
-#BMI (Body Mass Index) is closely related to hypertension. Studies show that obesity is a major risk factor for high blood pressure, with around 65% to 78% of primary hypertension cases being linked to excess weigh
-
-ggplot(diabetes_dataset, aes(x = hypertension, fill = bmi)) +
-  geom_density(alpha = 0.5) +
-  labs(title = "BMI Distribution by Hypertension Status", x = "BMI", y = "Hypertension")
-
-diabetes_dataset %>% select(hypertension) %>%  filter(hypertension != 1 & 0)
-
-hypertension_vs_bmi <- HbA1c_by_gender %>%
-  mutate(hypertension_vs_bmi = factor(hypertension, levels = c("yes", "no")))
-hypertension_vs_bmi
-ggplot(hypertension_vs_bmi) + geom_density(aes(x = bmi , color = hypertension),alpha = .6)
-```
-
-```{r}
-#diabetes_dataset %>% ggplot(aes(x=bmi)) + geom_point()
-```
 
 # Smokers go brrr
 
