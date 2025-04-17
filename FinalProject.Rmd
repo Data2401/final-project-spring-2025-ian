@@ -181,6 +181,18 @@ diabetes_dataset %>% filter(gender == 'Male') %>% tally   # 41,430
 diabetes_dataset %>% filter(gender == 'Other') %>% tally  # 18	
 ```
 
+
+One of the more interesting bits of data is that there are individuals that have an a1c of over 6.5 yet are not considered diabetic. 
+
+```{r hbA1C}
+diabetes_dataset %>% filter(HbA1c_level >= 6.5) %>%  ggplot(aes(x = diabetes)) + geom_histogram(bins = 2, binwidth = .5)
+
+
+
+
+```
+
+
 # Smokers go brrr
 
 In the smoking data there are 6 unique values
@@ -221,7 +233,7 @@ smoking_diabetes_dataset <- diabetes_dataset %>%
 
 Now we can graph the relationship between
 
-```{r Plotting data}
+```{r Plotting smoking data}
 
 print('hello world')
 
