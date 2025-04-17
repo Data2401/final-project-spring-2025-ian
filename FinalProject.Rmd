@@ -74,75 +74,76 @@ female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
 ```
 
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-In this section we want to display a stack bar showing how HbA1c levels (average blood sugar levels) can classify Males and Females in different categories such as Normal, Prediabetes, and Diabetes. From this plot we gain insight on how the distribution of Normal, Prediabetes, and Diabetes varies between both genders.
-
-First we load our libraries such as dplyr for data manipulation, ggplot2 for data visualization, and plotly to make our plot interactive. Then we we display our original dataset. 
-
-
-From our original data set we create a new dataset called HbA1c_by_gender. For our new dataset we want to keep only the Male and Female gender and exclude Other, the way to do this is by filtering our gender column to not equal to 'Other'. We also create a new variable called HbA1c_category with the use of our mutate function. We use the case_when function to classify our HbA1c_level column and return different categories such as 'Normal', 'Prediabetes', and 'Diabetes'.
-
-Then we print out our mutated dataset to make a comparison of the original.
-
-In the next section we want our stack bar to follow a certain order, we want Normal at the top, Prediabetes at the middle, and Diabetes at the bottom. To do this we will mutate our HbA1c_category column to an ordered categorical variable with the use of the factor function, the levels argument helps to set the order we want.
-
-
-Next, we will plot a stack bar using ggplot. Before that we will change the name of our data set to 'Interactive_mode' that way we can easily incorporate our data set to ggplotly. The scale_fill_manual function is used to manually assign colors to the different categories.
-
-Lastly, with the use of plotly we transform our plot into an interactive plot. When approaching the table we are able to see the count, gender, and HbA1c_category for any of the stacked bars.
 
 ```{r}
 library(dplyr)
 library(ggplot2)
 library(plotly)
 
-diabetes_dataset
+# Compute percentages
+HbA1c_counts <- HbA1c_by_gender %>%
+  count(gender, HbA1c_category) %>%
+  group_by(gender) %>%
+  mutate(percent = n / sum(n) * 100)  # Compute percentage
 
-HbA1c_by_gender <- diabetes_dataset %>% filter(gender != 'Other') %>% 
-  mutate(HbA1c_category = case_when(
-    HbA1c_level < 5.7 ~ "Normal < 5.7%",
-    HbA1c_level >= 5.7 & HbA1c_level < 6.5 ~ "Prediabetes 5.7% - 6.4%",
-    HbA1c_level >= 6.5 ~ "Diabetes ≥ 6.5%",
-    TRUE ~ NA_character_  # handles unexpected cases that don’t match the defined conditions keeping missing values as NA
-    ))
+# Create stacked bar plot with percentage labels
+HbA1c_counts_plotly <- ggplot(HbA1c_counts, aes(x = gender, y = n, fill = HbA1c_category)) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.2) +
+  geom_text(aes(label = paste0(round(percent, 1), "%")), 
+            position = position_fill(vjust = 0.5)) +
+  scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk2", 
+                               "Prediabetes 5.7% - 6.4%" = "darkkhaki", 
+                               "Diabetes ≥ 6.5%" = "darkgoldenrod")) +
+  labs(title = "Male vs. Female Blood Sugar Levels (HbA1c)", 
+       x = "Gender", y = "Proportion", fill = "HbA1c Category") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5))
 
-HbA1c_by_gender
-
-HbA1c_by_gender <- HbA1c_by_gender %>%
-  mutate(HbA1c_category = factor(HbA1c_category, levels = c("Normal < 5.7%", "Prediabetes 5.7% - 6.4%", "Diabetes ≥ 6.5%")))
-
-interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = HbA1c_category)) +
-  geom_bar(position = "stack") +
-  scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk2", "Prediabetes 5.7% - 6.4%" = "darkkhaki", "Diabetes ≥ 6.5%" = "darkgoldenrod")) +
-  labs(title = "Male vs. Female Blood Sugar Levels(HbA1c)",
-       x = "Gender",
-       y = "Count",
-       fill = "HbA1c Category") +
-  theme_classic()  +
-  theme(plot.title = element_text(hjust = 0.5)) # this code adjusts the tittle to the middle
-
-ggplotly(interactive_mode)
-
-library(ggplot2)
-
-ggplot(diabetes_dataset, aes(x = bmi, fill = factor(hypertension))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("blue", "red"), labels = c("No Hypertension", "Hypertension")) +
-  labs(title = "BMI Distribution by Hypertension Status",
-       x = "BMI",
-       y = "Density",
-       fill = "Hypertension") +
-  theme_minimal()
-
+ggplotly(HbA1c_counts_plotly)
 ```
 
+
+Shows the distribution of BMI values based on hypertension status. A violin plot is great for visualizing the distribution and density of BMI across hypertension categories, 
+
+Shape and width: The width of each "violin" represents the density of BMI values at different levels. Wider sections mean more individuals have that BMI, while narrower sections indicate fewer people at those values.
+
+Comparison of distributions: The blue violin represents people without hypertension (hypertension = 0), while the red violin represents those with hypertension (hypertension = 1). By comparing them, you can see how BMI differs between these groups.
+
+The horizontal line around 25 BMI: This marks the median BMI for each group. Since both violins have a horizontal line in roughly the same position, it suggests that the median BMI is around 25 for both hypertensive and non-hypertensive individuals.
+
+Density trends: If the violins have different thicknesses in certain BMI ranges, it tells you which BMI values are more or less common in each group.
+People with hypertension seem to have a higher BMI overall, but both groups share a similar median.
+
+The distribution shape is different—for example, if one violin is wider at higher BMI values, it suggests that hypertension is more common among individuals with higher BMI.
+
+Outliers or extreme values might appear as small bulges or extended tails at the ends of the violins, showing individuals with very high or low BMI.
+
+```{r}
+overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE)
+
+BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = bmi, fill = factor(hypertension))) +
+  geom_violin(alpha = 0.5) +
+  geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", size = 0.2) +
+  scale_fill_manual(values = c("cornflowerblue", "darkred"), labels = c("No Hypertension", "Hypertension")) +
+  labs(title = "BMI Distribution by Hypertension Status",
+       x = "Hypertension Status (0 = No, 1 = Yes)",
+       y = "BMI",
+       fill = "Hypertension") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplotly(BMI_distribution)
+```
+
+
 Here I'll leave extra info for you guys regarding the gender column of the original data set
+
 ```{r}
 diabetes_dataset %>% filter(gender == 'Female') %>% tally # 58,552 we have 17,122 more females than males in this data set
 diabetes_dataset %>% filter(gender == 'Male') %>% tally   # 41,430	
 diabetes_dataset %>% filter(gender == 'Other') %>% tally  # 18	
 ```
+
 ```{r}
 #BMI (Body Mass Index) is closely related to hypertension. Studies show that obesity is a major risk factor for high blood pressure, with around 65% to 78% of primary hypertension cases being linked to excess weigh
 
@@ -162,31 +163,30 @@ ggplot(hypertension_vs_bmi) + geom_density(aes(x = bmi , color = hypertension),a
 #diabetes_dataset %>% ggplot(aes(x=bmi)) + geom_point()
 ```
 
-
-
 # Smokers go brrr
+
 In the smoking data there are 6 unique values
 
-   1) Never: Has Never smoked
-   2) Not current: Has smoked but is not currently smoking
-   3) Former: Has quit smoking (abstained for longer than)
-   4) Current: Is currently a smoker
-   5) Ever: Has ever smoked regardless of current smoking status
-   6) No Info: No smoking history information available
-   
+1)  Never: Has Never smoked
+2)  Not current: Has smoked but is not currently smoking
+3)  Former: Has quit smoking (abstained for longer than)
+4)  Current: Is currently a smoker
+5)  Ever: Has ever smoked regardless of current smoking status
+6)  No Info: No smoking history information available
+
 The total amount of people who fall into each category is as follows;
 
-   1) Never: 35095
-   2) Not current: 6447
-   3) Former: 9352
-   4) Current: 9286
-   5) Ever: 4004
-   6) No Info: 35816
-   
+1)  Never: 35095
+2)  Not current: 6447
+3)  Former: 9352
+4)  Current: 9286
+5)  Ever: 4004
+6)  No Info: 35816
+
 There is quite a sizable amount of people in the No info category.
 
-The total number of people in the dataset is `r nrow(diabetes_dataset)`. 
-To help clean up the data, we can filter 'No Info' people out. When we do that we get `r nrow(diabetes_dataset %>% filter(smoking_history != 'No Info'))`.
+The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help clean up the data, we can filter 'No Info' people out. When we do that we get `r nrow(diabetes_dataset %>% filter(smoking_history != 'No Info'))`.
+
 ```{r Cleaning smoking data}
 
 # Figure out the unique categories of smoking history 
@@ -200,6 +200,7 @@ smoking_diabetes_dataset <- diabetes_dataset %>%
   group_by(smoking_history, diabetes) %>%  
   summarise(total = n())
 ```
+
 Now we can graph the relationship between
 
 ```{r Plotting data}
@@ -207,7 +208,3 @@ Now we can graph the relationship between
 print('hello world')
 
 ```
-
-
-
-
