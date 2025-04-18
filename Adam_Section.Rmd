@@ -1,0 +1,68 @@
+---
+title: "Adam_Section_Go_Brrr"
+output: ioslides_presentation
+date: "2025-04-18"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+One of the more interesting bits of data is that there are individuals that have an a1c of over 6.5 yet are not considered diabetic.
+
+```{r hbA1C vs Blood Sugar}
+
+A1C_vs_Glucose <- diabetes_dataset %>%  ggplot(aes(x = blood_glucose_level , y = HbA1c_level, color = as.factor(diabetes))) + geom_point() + geom_jitter()
+
+A1C_vs_Glucose
+
+
+```
+
+
+# Smokers go brrr
+
+In the smoking data there are 6 unique values
+
+1)  Never: Has Never smoked
+2)  Not current: Has smoked but is not currently smoking
+3)  Former: Has quit smoking (abstained for longer than)
+4)  Current: Is currently a smoker
+5)  Ever: Has ever smoked regardless of current smoking status
+6)  No Info: No smoking history information available
+
+The total amount of people who fall into each category is as follows;
+
+1)  Never: 35095
+2)  Not current: 6447
+3)  Former: 9352
+4)  Current: 9286
+5)  Ever: 4004
+6)  No Info: 35816
+
+There is quite a sizable amount of people in the No info category.
+
+The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help clean up the data, we can filter 'No Info' people out. When we do that we get `r nrow(diabetes_dataset %>% filter(smoking_history != 'No Info'))`.
+
+```{r Cleaning smoking data}
+
+# Figure out the unique categories of smoking history
+unique(diabetes_dataset$smoking_history)
+
+# Count amount of people who belong to each unique category
+diabetes_dataset %>% group_by(smoking_history) %>% summarise(total_people = n())
+
+smoking_diabetes_dataset <- diabetes_dataset %>%
+  filter(smoking_history != 'No Info') %>%  
+  group_by(smoking_history, diabetes) %>%  
+  summarise(total = n())
+```
+
+Now we can graph the relationship between
+
+```{r Plotting smoking data}
+
+print('hello world')
+
+```
+
