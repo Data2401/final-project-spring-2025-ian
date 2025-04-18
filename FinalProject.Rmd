@@ -19,13 +19,8 @@ diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
 #View(diabetes_dataset)
 ```
 
-### Diabetes Dataset
 
-```{r, echo=FALSE,fig.width=4, fig.height=4 }
-library(knitr)
-#diabetes_dataset
-kable(head(diabetes_dataset, 6), caption = "100,000 × 9 (first 6 rows)")
-```
+
 
 ```{r,include=FALSE}
 
@@ -75,8 +70,29 @@ female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
 
 ```
 
+### Diabetes Dataset
 
-### Male vs. Female Blood Sugar Levels (HbA1c) Plot
+```{r, echo=FALSE}
+library(knitr)
+# Install DT package if not already installed
+install.packages("DT")
+
+# Load DT package
+library(DT)
+
+# Render the interactive table
+datatable(diabetes_dataset, options = list(
+  pageLength = 10,    # Display more rows (adjust as needed)
+  scrollY = "400px",  # Enables vertical scrolling
+  autoWidth = TRUE    # Adjusts column width
+))
+
+#diabetes_dataset
+#kable(head(diabetes_dataset, 6), caption = "100,000 × 11 (first 6 rows)")
+```
+
+
+### Male vs. Female Blood Sugar Levels (HbA1c)
 
 ```{r, echo=FALSE}
 library(dplyr)
@@ -97,7 +113,7 @@ HbA1c_by_gender <- HbA1c_by_gender %>%
 
 # here we print out our mutated dataset to make a comparison of the original.
 #HbA1c_by_gender
-kable(head(HbA1c_by_gender, 6), caption = "99,982 × 10 (first 6 rows)")
+kable(head(HbA1c_by_gender, 6), caption = "6 rows")
 ```
 
 
@@ -156,31 +172,22 @@ The distribution shape is different—for example, if one violin is wider at hig
 
 Outliers or extreme values might appear as small bulges or extended tails at the ends of the violins, showing individuals with very high or low BMI.
 
-```{r, echo=FALSE,fig.width=7, fig.height=6, fig.align="center"}
+```{r, echo=FALSE,fig.width=8, fig.height=6, fig.align="center"}
 overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE)
 
 BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = bmi, fill = factor(hypertension))) +
-  geom_violin(alpha = 0.7) +
-  geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", linewidth = 0.3) +
-  scale_fill_manual(values = c("azure3", "coral3"), labels = c("No Hypertension", "Hypertension")) +
-   scale_y_continuous(breaks = seq(10.01, 95.69, by = 5)) +
+  geom_violin(alpha = 0.5) +
+  geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", linewidth = 0.2) +
+  scale_fill_manual(values = c("darkslategray3", "darkred"), labels = c("No Hypertension", "Hypertension")) +
   labs(title = "BMI Distribution by Hypertension Status",
        x = "Hypertension Status (0 = No, 1 = Yes)",
        y = "BMI",
        fill = "Hypertension") +
   theme_light() +
-  #theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))
 
 ggplotly(BMI_distribution)
 ```
- 
-### BMI vs. Age Across Diabetes & Heart Disease Plot
-
-create horizontal lines with this info
-Prediabetes & Type 2 Diabetes Risk:Often associated with BMI ≥25 (overweight or obese categories).
-Normal-Weight Diabetes: Some individuals develop diabetes even with a BMI <25, due to factors like genetics, visceral fat, and metabolic health
-Higher BMI & Diabetes Progression: A BMI ≥30 significantly increases the risk of insulin resistance and complications
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
 library(ggplot2)
@@ -201,14 +208,12 @@ heart_disease_only <- diabetes_dataset_filtered_bmi %>%
 
 combined_data <- bind_rows(diabetes_only, heart_disease_only)
 
-#interactive_combined_data <- 
-
-ggplot(combined_data) +
+interactive_combined_data <- ggplot(combined_data) +
   geom_point(aes(x = age, y = bmi_filtered, color = condition), alpha = 0.3) +  # Scatter plot with BMI
   geom_jitter(aes(x = age, y = bmi_filtered, color = condition), width = 0.1, height = 0.1, alpha = 0.3) +
   scale_color_manual(values = c("Diabetes Only" = "cornflowerblue", "Heart Disease Only" = "darkorchid4")) + 
   geom_smooth(aes(x = age, y = bmi_filtered), method = "gam", size = 1, color = "red", se = FALSE) +  # Single tr0end line
-  scale_x_continuous(breaks = seq(0, 80, by = 5)) + 
+  scale_x_continuous(breaks = seq(0, 80, by = 10)) + 
   scale_y_continuous(breaks = seq(10.01, 95.69, by = 10)) +
   labs(title = "BMI vs. Age Across Diabetes & Heart Disease",
        x = "Age",
@@ -217,7 +222,7 @@ ggplot(combined_data) +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))
 
-# ggplotly(interactive_combined_data)
+ggplotly(interactive_combined_data)
 ```
 
 # Smokers go brrr
