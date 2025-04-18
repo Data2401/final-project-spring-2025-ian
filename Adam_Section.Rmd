@@ -6,18 +6,70 @@ date: "2025-04-18"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(ggplot2)
+
 ```
 
 One of the more interesting bits of data is that there are individuals that have an a1c of over 6.5 yet are not considered diabetic.
 
 ```{r hbA1C vs Blood Sugar}
 
-A1C_vs_Glucose <- diabetes_dataset %>%  ggplot(aes(x = blood_glucose_level , y = HbA1c_level, color = as.factor(diabetes))) + geom_point() + geom_jitter()
+A1C_vs_Glucose <- ggplot(diabetes_dataset) + 
+
 
 A1C_vs_Glucose
+```
 
+
+```{r Blood_Glucose_level Data}
+
+diabetes_dataset %>% group_by(diabetes) %>% summarise(total = n())
+
+DIABETES_DEFINITION_BROKEN <- diabetes_dataset %>% filter(HbA1c_level >= 6.5)
+
+ggplot(DIABETES_DEFINITION_BROKEN, aes(x = HbA1c_level, y = blood_glucose_level, color = as.factor(diabetes))) + geom_line() 
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Smokers go brrr
@@ -50,19 +102,21 @@ The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help
 unique(diabetes_dataset$smoking_history)
 
 # Count amount of people who belong to each unique category
-diabetes_dataset %>% group_by(smoking_history) %>% summarise(total_people = n())
+xyz <- diabetes_dataset %>% filter(smoking_history != 'No Info') %>%  group_by(smoking_history) %>% summarise(total_people = n())
 
 smoking_diabetes_dataset <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, diabetes) %>%  
   summarise(total = n())
+
+smoking_diabetes_dataset
 ```
 
-Now we can graph the relationship between
+Now we can graph the relationship between smoking and diabetes as separated by category.
 
 ```{r Plotting smoking data}
 
-print('hello world')
+adams_first_graph <- ggplot(smoking_diabetes_dataset) + geom_col(aes(x = smoking_history, y = total, fill = as.factor(diabetes)), position = 'dodge')
 
 ```
 
