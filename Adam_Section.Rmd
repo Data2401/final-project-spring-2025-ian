@@ -16,63 +16,15 @@ One of the more interesting bits of data is that there are individuals that have
 
 ```{r hbA1C vs Blood Sugar}
 
-A1C_vs_Glucose <- ggplot(diabetes_dataset) + 
-
-
-A1C_vs_Glucose
 ```
 
 
 ```{r Blood_Glucose_level Data}
 
-diabetes_dataset %>% group_by(diabetes) %>% summarise(total = n())
-
-DIABETES_DEFINITION_BROKEN <- diabetes_dataset %>% filter(HbA1c_level >= 6.5)
-
-ggplot(DIABETES_DEFINITION_BROKEN, aes(x = HbA1c_level, y = blood_glucose_level, color = as.factor(diabetes))) + geom_line() 
-
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Smokers go brrr
+# Smokers go brrr# Smokers go brrrgeom_boxplot()
 
 In the smoking data there are 6 unique values
 
@@ -104,19 +56,44 @@ unique(diabetes_dataset$smoking_history)
 # Count amount of people who belong to each unique category
 xyz <- diabetes_dataset %>% filter(smoking_history != 'No Info') %>%  group_by(smoking_history) %>% summarise(total_people = n())
 
+#group diabetic vs non diabetic people together
 smoking_diabetes_dataset <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, diabetes) %>%  
   summarise(total = n())
 
 smoking_diabetes_dataset
+
+smoking_data_Percentage <- inner_join(xyz, smoking_diabetes_dataset, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, diabetes, total, Percentage)
 ```
 
-Now we can graph the relationship between smoking and diabetes as separated by category.
+Now we can graph the relationship between smoking and diabetes as separated by smoking category.
 
 ```{r Plotting smoking data}
-
+library(ggplot2)
 adams_first_graph <- ggplot(smoking_diabetes_dataset) + geom_col(aes(x = smoking_history, y = total, fill = as.factor(diabetes)), position = 'dodge')
 
+smoking_diabetes_graph <- adams_first_graph + coord_flip() + labs(
+  title = 'Smoking History and Diabetes Relationship',
+  x = 'People',
+  y = 'Smoking History',
+  fill = 'Has Diabetes',
+  caption = "1 indicates diabetes, 0 indicates no diabetes"
+)
+
+smoking_diabetes_graph
+```
+```{r Smoking on that percentage pack tonight tonight}
+smoking_data_Percentage
+
+ggplot(smoking_data_Percentage, aes(smoking_history, Percentage, colour = as.factor(diabetes))) + geom_count()
 ```
 
+
+```{r heart disease and smoking}
+smoking_heart_disease_dataset <- diabetes_dataset %>%
+  filter(smoking_history != 'No Info') %>%  
+  group_by(smoking_history, heart_disease) %>%  
+  summarise(total = n())
+smoking_heart_disease_dataset
+```
