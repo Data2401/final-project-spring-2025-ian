@@ -117,7 +117,7 @@ The proportion of individuals classified as having prediabetes (HbA1c 5.7% - 6.4
 :::
 
 
-```{r, echo=FALSE, fig.width=7, fig.height=6, fig.align="center"}
+```{r, echo=FALSE, fig.width=8, fig.height=6, fig.align="center"}
 # Compute percentages
 HbA1c_counts <- HbA1c_by_gender %>%
   count(gender, HbA1c_category) %>%
@@ -177,12 +177,17 @@ ggplotly(BMI_distribution)
  
 ### BMI vs. Age Across Diabetes & Heart Disease Plot
 
+create horizontal lines with this info
+Prediabetes & Type 2 Diabetes Risk:Often associated with BMI ≥25 (overweight or obese categories).
+Normal-Weight Diabetes: Some individuals develop diabetes even with a BMI <25, due to factors like genetics, visceral fat, and metabolic health
+Higher BMI & Diabetes Progression: A BMI ≥30 significantly increases the risk of insulin resistance and complications
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
 library(ggplot2)
 library(dplyr)
 
-#diabetes_dataset_filtered_bmi <- diabetes_dataset %>%
-  #mutate(bmi_filtered = ifelse(bmi >= 2, bmi, NA))
+diabetes_dataset_filtered_bmi <- diabetes_dataset %>%
+  mutate(bmi_filtered = ifelse(bmi >= 2, bmi, NA))
 
 diabetes_only <- diabetes_dataset_filtered_bmi %>%
   select(age, bmi_filtered, diabetes) %>%
@@ -213,11 +218,6 @@ ggplot(combined_data) +
   theme(plot.title = element_text(hjust = 0.5))
 
 # ggplotly(interactive_combined_data)
-
-# create horizontal lines with this info
-# Prediabetes & Type 2 Diabetes Risk:Often associated with BMI ≥25 (overweight or obese categories).
-# Normal-Weight Diabetes: Some individuals develop diabetes even with a BMI <25, due to factors like genetics, visceral fat, and metabolic health
-# Higher BMI & Diabetes Progression: A BMI ≥30 significantly increases the risk of insulin resistance and complications
 ```
 
 # Smokers go brrr
