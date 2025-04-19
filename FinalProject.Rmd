@@ -156,37 +156,6 @@ The distribution shape is different—for example, if one violin is wider at hig
 
 Outliers or extreme values might appear as small bulges or extended tails at the ends of the violins, showing individuals with very high or low BMI.
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=6}
-library(dplyr)
-library(ggplot2)
-library(plotly)
-
-non_healthy_bl <- diabetes_dataset %>% select(blood_glucose_level,diabetes,age) %>% filter(age >= 3, diabetes == 1)
-#h: 300   l: 126 
-
-healthy_bl <- diabetes_dataset %>% select(blood_glucose_level,diabetes,age) %>% filter(age >= 3, diabetes == 0)
-#h: 200  l: 80
-
-interactive_BGL_plot <- ggplot(df, aes(x = diabetes_status, y = blood_glucose_level, fill = diabetes_status)) +
-  geom_boxplot(alpha = 0.5) +
-  labs(title = "Blood Glucose Levels by Diabetes Status",
-       x = "Status",
-       y = "Blood Glucose Level") +
-  scale_y_continuous(breaks = seq(80, 300, by = 20)) +
-  scale_fill_manual(values = c("Diabetes" = "#CC3300", "No Diabetes" = "#99CCFF")) +
-  labs(fill = "Status") +
-  geom_hline(yintercept = c(120, 140), linetype = "line", color = "#0033FF", size = 0.2) +  # Mark Normal Range
-  geom_hline(yintercept = c(180, 250), linetype = "line", color = "#CC3300", size = 0.3) +  # Mark High Range
-  theme_void() +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  theme(
-    plot.title = element_text(size = 13),
-    axis.text = element_text(size = 11),
-  )
-ggplotly(interactive_BGL_plot)
-```
-
-
 ```{r, echo=FALSE,fig.width=7, fig.height=6, fig.align="center"}
 library(dplyr)
 library(ggplot2)
@@ -213,6 +182,36 @@ BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = b
 ggplotly(BMI_distribution)
 ```
 
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=6}
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
+BGL_status_diabetes_dataset <- diabetes_dataset %>%
+  select(blood_glucose_level,diabetes, age) %>%
+  filter(age >= 3) %>% 
+  mutate(diabetes = factor(diabetes, levels = c(0, 1), labels = c("No Diabetes", "Diabetes"))) %>% 
+  ggplot(aes(x = diabetes, y = blood_glucose_level, fill = diabetes)) +
+  geom_boxplot(alpha = 0.5) +
+  labs(title = "Blood Glucose Levels by Diabetes Status (age 3-80)",
+       x = "Diabetes Status",
+       y = "Blood Glucose Level") +
+  scale_fill_manual(values = c("Diabetes" = "#CC3300", "No Diabetes" = "#99CCFF")) +
+  labs(fill = "Status") +
+  scale_y_continuous(breaks = seq(80, 300, by = 20)) +
+  geom_hline(yintercept = c(120, 140), linetype = "solid", color = "#0033FF", size = 0.2) +
+  geom_hline(yintercept = c(180, 250), linetype = "solid", color = "#CC3300", size = 0.3) +  # Mark High Range
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(
+    plot.title = element_text(size = 13),
+    axis.text = element_text(size = 11),
+  )
+
+ggplotly(BGL_status_diabetes_dataset)
+```
+
+
 ## BMI vs. Age Across Diabetes & Heart Disease Plot
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
@@ -234,9 +233,18 @@ heart_disease_only <- diabetes_dataset_filtered_bmi %>%
 
 combined_data <- bind_rows(diabetes_only, heart_disease_only)
 
+common_bmi <- diabetes_dataset_filtered_bmi %>%
+  filter(bmi_filtered >= 25.01 & bmi_filtered <= 30.01) %>%
+  count(bmi_filtered) %>%
+  arrange(desc(n))  # Sort by highest count
+
+most_common_bmi <- common_bmi$bmi_filtered[1]  # Extract the most frequent BMI
+print(most_common_bmi) 
+
 ggplot(combined_data) +
   geom_point(aes(x = age, y = bmi_filtered, color = condition), alpha = 0.3) +  # Scatter plot with BMI
   geom_jitter(aes(x = age, y = bmi_filtered, color = condition), width = 0.1, height = 0.1, alpha = 0.3) +
+  geom_hline(yintercept = most_common_bmi, linetype = "solid", color = "red", size = 0.3) +  # Horizontal line marking common BMI
   scale_color_manual(values = c("Diabetes Only" = "cornflowerblue", "Heart Disease Only" = "darkorchid4")) + 
   scale_x_continuous(breaks = seq(0, 80, by = 10)) + 
   scale_y_continuous(breaks = seq(10.01, 95.69, by = 10)) +
@@ -251,6 +259,7 @@ ggplot(combined_data) +
     legend.text = element_text(size = 11),
     plot.title = element_text(size = 13)
   )
+
 ```
 
 # Smokers go brrr
