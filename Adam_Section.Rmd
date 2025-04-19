@@ -109,7 +109,7 @@ smoking_heart_disease_data <- diabetes_dataset %>%
   summarise(total = n())
 smoking_heart_disease_data
 
-smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_disease_data, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, heart_disease, total, Percentage)
+smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_disease_data, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people *100, digits = 2)) %>% select(smoking_history, heart_disease, total, Percentage)
 
 smoking_heart_disease_percentage
 
@@ -133,7 +133,7 @@ smoking_hypertension_data <- diabetes_dataset %>%
   summarise(total = n())
 smoking_hypertension_data
 
-smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertension_data, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, hypertension, total, Percentage)
+smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertension_data, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people *100, digits = 2)) %>% select(smoking_history, hypertension, total, Percentage)
 
 smoking_hypertension_percentage
 ```
