@@ -1,0 +1,935 @@
+---
+title: "FinalProject"
+output: html_document
+date: "2025-04-10"
+---
+
+```{r setup, include=FALSE, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggplot2)
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(ggplot2)
+
+ggplot(smoking_diabetes_percentage) + geom_col(aes(x = smoking_history, y = Percentage, fill = as.factor(diabetes)))
+smoking_diabetes_percentage
+
+
+
+library(ggplot2)
+
+smoking_diabetes_per <- smoking_diabetes_percentage %>% select(smoking_history,diabetes,total) %>% mutate(diabetes = factor(diabetes, levels = c(0, 1), labels = c("No Diabetes", "Diabetes"))) 
+smoking_diabetes_per
+
+smoking_diabetes_per <- smoking_diabetes_per %>%
+  group_by(smoking_history) %>%  # Group by smoking category
+  mutate(Percentage = total / sum(total) * 100) 
+
+ggplot(smoking_diabetes_per, aes(x = smoking_history, y = Percentage, fill = diabetes)) +
+  geom_col(position = "stack") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 4) +
+  labs(title = "Smoking History and Diabetes Status",
+       x = "Smoking History",
+       y = "Total Count",
+       fill = "Diabetes Status") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis for better readability
+
+
+
+
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
+
+smoking_diabetes_per <- smoking_diabetes_percentage %>% select(smoking_history,diabetes,total, Percentage) %>% mutate(diabetes = factor(diabetes, levels = c(0, 1), labels = c("No Diabetes", "Diabetes"))) 
+smoking_diabetes_per
+
+ggplot(smoking_diabetes_per, aes(x = smoking_history, y = Percentage, fill = diabetes)) +
+  geom_col(position = "stack") +
+  labs(title = "Smoking History and Diabetes Status",
+       x = "Smoking History",
+       y = "Total Count",
+       fill = "Diabetes Status") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis for better readability
+
+
+
+ggplot(smoking_diabetes_percentage, aes(x = smoking_history, y = Percentage, fill = diabetes)) +
+  geom_col(position = "stack") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5), size = 4) +  # Centers text inside bars
+  labs(title = "Smoking History and Diabetes Status",
+       x = "Smoking History",
+       y = "Percentage (%)",
+       fill = "Diabetes Status") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+
+
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
+
+x <- ggplot(smoking_diabetes_per, aes(x = smoking_history, y = Percentage, fill = diabetes)) +
+  geom_col(position = "stack") +
+  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5), size = 4) +  # Centers text inside bars
+  labs(title = "Smoking History and Diabetes Status",
+       x = "Smoking History",
+       y = "Percentage (%)",
+       fill = "Diabetes Status") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+
+
+ggplotly(x)
+
+smoking_diabetes_per %>% 
+ggplot(smoking_diabetes_per) + geom_col(aes(x = smoking_history, y = total, fill = (diabetes)))
+smoking_diabetes_per
+```
+
+```{r}
+# Compute percentages
+HbA1c_counts <- HbA1c_by_gender %>%
+  count(gender, HbA1c_category) %>%
+  group_by(gender) %>%
+  mutate(percent = n / sum(n) * 100)  # Compute percentage
+
+# Create stacked bar plot with percentage labels
+HbA1c_counts_plotly <- ggplot(HbA1c_counts, aes(x = gender, y = n, fill = HbA1c_category)) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.1, alpha = 0.5) +
+  geom_text(aes(label = paste0(round(percent, 1), "%")), 
+            position = position_fill(vjust = 0.5)) +
+  scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk", 
+                               "Prediabetes 5.7% - 6.4%" = "darkkhaki", 
+                               "Diabetes ≥ 6.5%" = "darkgoldenrod4")) +
+  labs(title = "Male vs. Female Blood Sugar Levels (HbA1c)", 
+       x = "Gender", y = "Proportion", fill = "HbA1c Category") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(
+    plot.title = element_text(size = 13),
+    axis.text = element_text(size = 11),
+  )
+
+ggplotly(HbA1c_counts_plotly)
+```
+
+
+
+## Including Plots
+
+```{r echo = FALSE}
+diabetes_dataset
+# male datatset
+male_data = diabetes_dataset %>% filter(gender == "Male")
+# female dataset
+female_data = diabetes_dataset %>% filter(gender == "Female")
+female_data
+
+# males and females within original dataset that have a "normal" A1C
+
+female_data %>% filter(HbA1c_level <= 5.7) %>% tally()
+male_data %>% filter(HbA1c_level <= 5.7) %>% tally()
+
+# count of people (male and female) with both heart disease and diabetes
+diabetes_dataset %>% filter(diabetes == 1, heart_disease == 1) # this is saying how many rows are in the data group and tally ***
+# count of overweight people based on bmi who have heart disease
+diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1)
+diabetes_dataset %>% group_by(bmi >= 30) %>% filter(heart_disease == 1) 
+
+
+# "obese men" with bmi higher than 30 and that have diabetes (tally on second line)
+male_data %>% filter(bmi >= 30, diabetes == 1)
+male_data %>% filter(bmi >= 30, diabetes == 1) %>% tally()
+# "obese women" with bmi higher than 30 and that have diabetes (tally on second line)
+female_data %>% filter(bmi >= 30, diabetes == 1)
+female_data %>% filter(bmi >= 30, diabetes == 1) %>% tally() # grouped by gender ***
+# "underweight men"  with bmi lower than 19 and that have diabetes (tally on second line)
+male_data %>% filter(bmi <= 19, diabetes == 1)
+male_data %>% filter(bmi <= 19, diabetes == 1) %>% tally()
+# "underweight women"  with bmi lower than 19 and that have diabetes (tally on second line)
+female_data %>% filter(bmi <= 19, diabetes == 1)
+female_data %>% filter(bmi <= 19, diabetes == 1) %>% tally()
+# the assumption is that overweight people are more likely to have diabetes. Below is the code and tally of MEN who are overweight in terms of bmi and DONT have diabetes
+male_data %>% filter(bmi >= 30, diabetes == 0)
+male_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
+
+# the assumption is that overweight people are more likely to have diabetes. Below is the code and tally of WOMEN who are overweight in terms of bmi and DONT have diabetes
+female_data %>% filter(bmi >= 30, diabetes == 0)
+female_data %>% filter(bmi >= 30, diabetes == 0) %>% tally()
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+In this section we want to display a stack bar showing how HbA1c levels (average blood sugar levels) can classify Males and Females in different categories such as Normal, Prediabetes, and Diabetes. From this plot we gain insight on how the distribution of Normal, Prediabetes, and Diabetes varies between both genders.
+
+First we load our libraries such as dplyr for data manipulation, ggplot2 for data visualization, and plotly to make our plot interactive. Then we we display our original dataset.
+
+From our original data set we create a new dataset called HbA1c_by_gender. For our new dataset we want to keep only the Male and Female gender and exclude Other, the way to do this is by filtering our gender column to not equal to 'Other'. We also create a new variable called HbA1c_category with the use of our mutate function. We use the case_when function to classify our HbA1c_level column and return different categories such as 'Normal', 'Prediabetes', and 'Diabetes'.
+
+Then we print out our mutated dataset to make a comparison of the original.
+
+In the next section we want our stack bar to follow a certain order, we want Normal at the top, Prediabetes at the middle, and Diabetes at the bottom. To do this we will mutate our HbA1c_category column to an ordered categorical variable with the use of the factor function, the levels argument helps to set the order we want.
+
+Next, we will plot a stack bar using ggplot. Before that we will change the name of our data set to 'Interactive_mode' that way we can easily incorporate our data set to ggplotly. The scale_fill_manual function is used to manually assign colors to the different categories.
+
+Lastly, with the use of plotly we transform our plot into an interactive plot. When approaching the table we are able to see the count, gender, and HbA1c_category for any of the stacked bars.
+
+```{r echo = FALSE}
+# in this section we want to display a stack bar showing how HbA1c levels (average blood sugar levels) can classify Males and Females in different categories such as Normal, Prediabetes, and Diabetes. From this plot we gain insight on how the distribution of Normal, Prediabetes, and Diabetes varies between both genders.
+
+# first we load our libraries such as dplyr for data manipulation, ggplot2 for data visualization, and plotly to make our plot interactive.
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
+# here we display our original dataset
+diabetes_dataset
+
+# from our original data set we create a new dataset called HbA1c_by_gender. For our new dataset we want to keep only the Male and Female gender and exclude Other, the way to do this is by filtering our gender column to not equal to 'Other'. We also create a new variable called HbA1c_category with the use of our mutate function. We use the case_when function to classify our HbA1c_level column and return different categories such as 'Normal', 'Prediabetes', and 'Diabetes'.
+HbA1c_by_gender <- diabetes_dataset %>% filter(gender != 'Other') %>% 
+  mutate(HbA1c_category = case_when(
+    HbA1c_level < 5.7 ~ "Normal < 5.7%",
+    HbA1c_level >= 5.7 & HbA1c_level < 6.5 ~ "Prediabetes 5.7% - 6.4%",
+    HbA1c_level >= 6.5 ~ "Diabetes ≥ 6.5%",
+    TRUE ~ NA_character_  # handles unexpected cases that don’t match the defined conditions keeping missing values as NA
+    ))
+
+# here we print out our mutated dataset to make a comparison of the original.
+HbA1c_by_gender
+
+# in this section we want our stack bar to follow a certain order, we want Normal at the top, Prediabetes at the middle, and Diabetes at the bottom. To do this we will mutate our HbA1c_category column to an ordered categorical variable with the use of the factor function, the levels argument helps to set the order we want.
+HbA1c_by_gender <- HbA1c_by_gender %>%
+  mutate(HbA1c_category = factor(HbA1c_category, levels = c("Normal < 5.7%", "Prediabetes 5.7% - 6.4%", "Diabetes ≥ 6.5%")))
+
+# now we will plot a stack bar using ggplot. Before that we will change the name of our data set to 'Interactive_mode' that way we can easily incorporate our data set to ggplotly. The scale_fill_manual function is used to manually assign colors to the different categories.
+interactive_mode <- HbA1c_by_gender %>% ggplot(aes(x = gender, fill = HbA1c_category)) +
+  geom_bar(position = "stack") +
+  scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk2", "Prediabetes 5.7% - 6.4%" = "darkkhaki", "Diabetes ≥ 6.5%" = "darkgoldenrod")) +
+  labs(title = "Male vs. Female HbA1c Levels",
+       x = "Gender",
+       y = "Count",
+       fill = "HbA1c Category") +
+  theme_classic()  +
+  theme(plot.title = element_text(hjust = 0.5)) # this code adjusts the tittle to the middle
+
+# by using ggplotly we transform our ggplot into an interactive plot. When approaching the table we are able to see the count, gender, and HbA1c_category for any of the stacked bars.
+ggplotly(interactive_mode)
+# feedback from shooe maker mesage = False
+# hide code for the presenatation
+#keep infor
+#smoking hist should be a factor
+# do posittion = fill lets you coount in proportions
+```
+
+
+
+```{r}
+library(ggplot2)
+
+# Example dataset (replace with actual data)
+data <- data.frame(
+  gender = factor(rep(c("Male", "Female", "Other"), each = 50)),
+  bmi = c(runif(50, 18, 40), runif(50, 18, 40), runif(50, 18, 40)), 
+  diabetes = factor(sample(c("Yes", "No"), 150, replace = TRUE))
+)
+
+# Creating the plot
+ggplot(data, aes(x = gender, y = bmi, fill = diabetes)) +
+  geom_boxplot() +
+  labs(title = "BMI Distribution by Gender and Diabetes Status",
+       x = "Gender",
+       y = "BMI") +
+  theme_minimal()
+```
+
+
+
+```{r}
+# here I'll leave extra info for you guys regarding the gender column of the original data set
+diabetes_dataset %>% filter(gender == 'Female') %>% tally # 58,552 we have 17,122 more females than males in this data set
+diabetes_dataset %>% filter(gender == 'Male') %>% tally   # 41,430	
+diabetes_dataset %>% filter(gender == 'Other') %>% tally  # 18	
+# check why most ppl dont have 5.3 because we are working with a bunch of ppl ****
+# turn heart disease into a category
+# when we graph we see that this data may not be legit bc ppl who are older that 80 seem to be pushed out 
+```
+```
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(scales)
+
+diabetes_dataset %>%
+  filter(age >= 3) %>%  # Ensure ages 3-80 are included
+  select(age, diabetes, heart_disease) %>%
+  pivot_longer(cols = c(diabetes, heart_disease), names_to = "condition", values_to = "status") %>%
+  filter(status == 1) %>%  # Keep only cases where the condition is present
+  ggplot(aes(x = age, fill = condition)) +
+  geom_density(alpha = 0.6, adjust = 1.5) +
+  scale_x_continuous(limits = c(3, 80), breaks = seq(3, 80, by = 7)) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +  # Show density as percentages
+  scale_fill_manual(values = c("red", "purple"), labels = c("Diabetes", "Heart Disease")) +
+  labs(title = "Density of Diabetes & Heart Disease Across Age Groups",
+       x = "Age", y = "Percentage Density", fill = "Condition") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+diabetes_dataset
+diabetes_dataset %>% select(age, diabetes, heart_disease) %>%  filter(age >= 3, diabetes == 1, heart_disease == 1) %>% arrange(age) %>%  ggplot(aes(x = age)) +
+  geom_density(alpha = 0.6, adjust = 1.5) +
+   theme_minimal()
+```
+
+
+```{r}
+diabetes_dataset
+
+diabetes_only <- diabetes_dataset %>% select(age, diabetes) %>%  filter(age >= 2, diabetes == 1)
+heart_disease_only <- diabetes_dataset %>% select(age,heart_disease) %>% filter(age >= 2, heart_disease == 1)
+bmi_older_than_two <- diabetes_dataset %>% select(age, bmi) %>% filter(age >= 2)
+
+ggplot() +
+  geom_density(data = diabetes_only, aes(x = age), fill = "blue", alpha = 0.5) +  # Diabetes cases
+  geom_density(data = heart_disease_only, aes(x = age), fill = "red", alpha = 0.5) + # Heart disease only
+  geom_density(data = bmi_older_than_two, aes(x = age), fill = "magenta", alpha = 0.5) +  
+  labs(title = "Age Distribution: Diabetes vs. Heart Disease",
+       x = "Age",
+       y = "Density") +
+  theme_minimal() 
+  
+
+```
+3666
+#10.01 smallest, largest 
+
+bmi_older_than_two <- diabetes_dataset %>% select(age, bmi) %>% filter(age >= 2, bmi == 'NA') %>% arrange(age)
+
+diabetes_dataset %>% select(age, diabetes) %>% filter(diabetes == 1) %>% arrange(-age)
+#3 yo the youngest, oldest 80
+
+
+diabetes_dataset %>% select(age, heart_disease) %>% filter(heart_disease == 1) %>% arrange(-age)
+# youngest 2, oldest 80
+
+
+# min age 6 (only 1 person)
+# max 80
+# 1,267 X 3
+
+library(ggplot2)
+library(dplyr)
+
+# Create a new condition column
+diabetes_dataset_condition <- diabetes_dataset %>%
+  mutate(condition = case_when(
+    diabetes == 1~ "Diabetes Only",
+    heart_disease == 1 ~ "Heart Disease Only"
+  )) %>% 
+  
+  filter(!is.na(condition))
+  
+
+# Scatter plot for Age vs. BMI, color-coded by condition
+ggplot(diabetes_dataset_condition) +
+  geom_point(aes(x = age, y = bmi, color = condition), alpha = 0.2) +  # Scatter plot
+  labs(title = "BMI vs. Age Across Diabetes & Heart Disease",
+       x = "Age",
+       y = "BMI",
+       color = "Condition") +
+  theme_minimal()
+
+
+
+
+####
+library(ggplot2)
+library(dplyr)
+#summary(diabetes_dataset$bmi)
+#diabetes_dataset$bmi <- as.numeric(diabetes_dataset$bmi)
+
+diabetes_dataset_filtered_bmi <- diabetes_dataset %>%
+  mutate(bmi_filtered = ifelse(bmi >= 2, bmi, NA))
+
+diabetes_only <- diabetes_dataset_filtered_bmi %>%
+  select(age, bmi_filtered, diabetes) %>%
+  filter(age >= 2, diabetes == 1) %>%
+  mutate(condition = "Diabetes Only")
+
+heart_disease_only <- diabetes_dataset_filtered_bmi %>%
+  select(age, bmi_filtered, heart_disease) %>%
+  filter(age >= 2, heart_disease == 1) %>%
+  mutate(condition = "Heart Disease Only")
+
+combined_data <- bind_rows(diabetes_only, heart_disease_only)
+
+ggplot(combined_data) +
+  geom_point(aes(x = age, y = bmi_filtered, color = condition), alpha = 0.2) +  # Scatter plot with BMI
+  geom_jitter(aes(x = age, y = bmi_filtered, color = condition), width = 0.1, height = 0.1, alpha = 0.3) +
+  scale_color_manual(values = c("Diabetes Only" = "deeppink", "Heart Disease Only" = "darkblue")) + 
+  geom_smooth(aes(x = age, y = bmi_filtered), method = "loess", size = 0.8, color = "red",  se = FALSE) +  # Single tr0end line
+  scale_x_continuous(breaks = seq(0, 80, by = 10)) + 
+  scale_y_continuous(breaks = seq(10.01, 95.69, by = 10)) +
+  labs(title = "BMI vs. Age Across Diabetes & Heart Disease",
+       x = "Age",
+       y = "BMI",
+       color = "Condition") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+####
+####
+library(ggplot2)
+library(dplyr)
+
+diabetes_dataset_filtered_bmi <- diabetes_dataset %>%
+  mutate(bmi_filtered = ifelse(bmi >= 2, bmi, NA))
+
+diabetes_only <- diabetes_dataset_filtered_bmi %>%
+  select(age, bmi_filtered, diabetes) %>%
+  filter(age >= 2, diabetes == 1) %>%
+  mutate(condition = "Diabetes Only")
+
+heart_disease_only <- diabetes_dataset_filtered_bmi %>%
+  select(age, bmi_filtered, heart_disease) %>%
+  filter(age >= 2, heart_disease == 1) %>%
+  mutate(condition = "Heart Disease Only")
+
+combined_data <- bind_rows(diabetes_only, heart_disease_only)
+
+ggplot(combined_data) +
+  geom_point(aes(x = age, y = bmi_filtered, color = condition), alpha = 0.3) +  # Scatter plot with BMI
+  geom_jitter(aes(x = age, y = bmi_filtered, color = condition), width = 0.1, height = 0.1, alpha = 0.3) +
+  scale_color_manual(values = c("Diabetes Only" = "cornflowerblue", "Heart Disease Only" = "darkorchid4")) + 
+  geom_smooth(aes(x = age, y = bmi_filtered), method = "loess", size = 1, color = "red",  se = FALSE) +  # Single tr0end line
+  scale_x_continuous(breaks = seq(0, 80, by = 10)) + 
+  scale_y_continuous(breaks = seq(10.01, 95.69, by = 10)) +
+  labs(title = "BMI vs. Age Across Diabetes & Heart Disease",
+       x = "Age",
+       y = "BMI",
+       color = "Condition") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+#ggplotly(interactive_combined_data)
+####
+
+
+bmi_older_than_two <- diabetes_dataset %>% select(age, bmi) %>% filter(age >= 2, bmi == 'N/A')
+# min bmi 10.01
+# max bmi 95.69
+diabetes_dataset_filtered_bmi <- diabetes_dataset %>%
+  mutate(bmi_filtered = ifelse(bmi >= 2, bmi, NA))
+diabetes_dataset_filtered_bmi %>% arrange(-bmi_filtered) 
+```
+
+```{r, echo=FALSE, fig.width=7, fig.height=6, fig.align="center"}
+# Compute percentages
+HbA1c_counts <- HbA1c_by_gender %>%
+  count(gender, HbA1c_category) %>%
+  group_by(gender) %>%
+  mutate(percent = n / sum(n) * 100)  # Compute percentage
+
+# Create stacked bar plot with percentage labels
+HbA1c_counts_plotly <- ggplot(HbA1c_counts, aes(x = gender, y = n, fill = HbA1c_category)) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.1, alpha = 0.6) +
+  geom_text(aes(label = paste0(round(percent, 1), "%")), 
+            position = position_fill(vjust = 0.5)) +
+  scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk", 
+                               "Prediabetes 5.7% - 6.4%" = "darkkhaki", 
+                               "Diabetes ≥ 6.5%" = "darkgoldenrod4")) +
+  labs(title = "Male vs. Female Blood Sugar Levels (HbA1c)", 
+       x = "Gender", y = "Proportion", fill = "HbA1c Category") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplotly(HbA1c_counts_plotly)
+```
+
+
+### how is heart_disease, blood_glucose and diabetes related
+
+## make plot on this !!!!!!!!!!!!!!!!!!!!!!
+
+
+
+diabetes_dataset
+
+diabetes_only <- diabetes_dataset %>% select(age, diabetes) %>%  filter(age >= 2, diabetes == 1)
+heart_disease_only <- diabetes_dataset %>% select(age,heart_disease) %>% filter(age >= 2, heart_disease == 1)
+bmi_older_than_two <- diabetes_dataset %>% select(age, bmi) %>% filter(age >= 2)
+
+ggplot() +
+  geom_density(data = diabetes_only, aes(x = age), fill = "blue", alpha = 0.5) +  # Diabetes cases
+  geom_density(data = heart_disease_only, aes(x = age), fill = "red", alpha = 0.5) + # Heart disease only
+  geom_density(data = bmi_older_than_two, aes(x = age), fill = "magenta", alpha = 0.5) +  
+  labs(title = "Age Distribution: Diabetes vs. Heart Disease",
+       x = "Age",
+       y = "Density") +
+  theme_minimal() 
+
+
+
+diabetes_dataset
+
+diabetes_only <- diabetes_dataset %>% select(age, diabetes) %>%  filter(diabetes == 1) 
+#y: 3 o: 80
+dia_count <- diabetes_only %>% tally()
+dia_count
+
+blood_glucose_dataset <- diabetes_dataset %>% select(age, blood_glucose_level) %>%  filter(blood_glucose_level != 'NA', age >= 2)
+#y:2   o: 80
+bg_count <- blood_glucose_dataset %>% tally()
+bg_count
+
+heart_disease_only <- diabetes_dataset %>% select(age,heart_disease) %>% filter(heart_disease == 1)
+#y: 2 o: 80
+hd_count <- heart_disease_only %>% tally()
+hd_count
+
+
+all_in_one <- diabetes_dataset %>% select(age, diabetes, blood_glucose_level,heart_disease) %>%  filter(diabetes == 1, blood_glucose_level != 'NA', age >= 2, heart_disease == 1) 
+all_in_one
+
+ggplot() +
+  geom_density(data = diabetes_only, aes(x = blood_glucose_level), fill = "blue", alpha = 0.5) +  # Diabetes cases
+  geom_density(data = blood_glucose_dataset, aes(x = blood_glucose_level), fill = "red", alpha = 0.5) + # Blood glucose levels
+  geom_density(data = heart_disease_only, aes(x = blood_glucose_level), fill = "magenta", alpha = 0.5) +  # Heart disease cases
+  labs(title = "Blood Glucose Distribution: Diabetes vs. Heart Disease",
+       x = "Blood Glucose Level",
+       y = "Density") +
+  theme_minimal()
+
+# Load necessary libraries
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(DT)
+
+# Filter datasets properly
+diabetes_only <- diabetes_dataset %>% 
+  select(age, diabetes, blood_glucose_level) %>% 
+  filter(diabetes == 1, !is.na(blood_glucose_level))
+
+blood_glucose_dataset <- diabetes_dataset %>% 
+  select(age, blood_glucose_level) %>%  
+  filter(!is.na(blood_glucose_level), age >= 2)
+
+heart_disease_only <- diabetes_dataset %>% 
+  select(age, heart_disease, blood_glucose_level) %>% 
+  filter(heart_disease == 1, !is.na(blood_glucose_level))
+
+# Create density plot
+ggplot(diabetes_dataset, aes(x = blood_glucose_level, fill = after_stat(density))) +
+  geom_density(alpha = 0.5) +  
+  geom_density(data = blood_glucose_dataset, aes(x = blood_glucose_level), fill = "red", alpha = 0.5) +  
+  geom_density(data = heart_disease_only, aes(x = blood_glucose_level), fill = "magenta", alpha = 0.5) +  
+  labs(title = "Blood Glucose Density: Diabetes vs. Heart Disease",
+       x = "Blood Glucose Level",
+       y = "Density") +
+  theme_minimal()
+
+
+
+```{r}
+diabetes_dataset
+
+diabetes_only <- diabetes_dataset %>% select(age, diabetes) %>%  filter(age >= 2, diabetes == 1)
+heart_disease_only <- diabetes_dataset %>% select(age,heart_disease) %>% filter(age >= 2, heart_disease == 1)
+bmi_older_than_two <- diabetes_dataset %>% select(age, bmi) %>% filter(age >= 2)
+
+ggplot() +
+  geom_density(data = diabetes_only, aes(x = age), fill = "blue", alpha = 0.5) +  # Diabetes cases
+  geom_density(data = heart_disease_only, aes(x = age), fill = "red", alpha = 0.5) + # Heart disease only
+  #geom_density(data = bmi_older_than_two, aes(x = age), fill = "magenta", alpha = 0.5) +  
+  labs(title = "Age Distribution: Diabetes vs. Heart Disease",
+       x = "Age",
+       y = "Density") +
+  theme_minimal() 
+```
+```{r}
+diabetes_dataset
+
+diabetes_only <- diabetes_dataset %>% select(age, diabetes) %>%  filter(age >= 2, diabetes == 1)
+heart_disease_only <- diabetes_dataset %>% select(age,heart_disease) %>% filter(age >= 2, heart_disease == 1)
+former_smoker_only <- diabetes_dataset %>% select(age, smoking_history) %>%  filter(age >= 7, smoking_history == 'former')
+
+ggplot() +
+  geom_density(data = diabetes_only, aes(x = age), fill = "blue", alpha = 0.5) +  # Diabetes cases
+  geom_density(data = heart_disease_only, aes(x = age), fill = "red", alpha = 0.5) + # Heart disease only
+  labs(title = "Age Distribution: Diabetes vs. Heart Disease",
+       x = "Age",
+       y = "Density") +
+  theme_minimal()
+
+```
+
+```{r}
+former_smoker_only <- diabetes_dataset %>% select(age, smoking_history) %>%  filter(smoking_history == 'former')
+#y: 7, o:80
+```
+
+##################!!!!!!!!!!!!!!!!!!!!
+
+```{r}
+#diabetes_dataset %>% select(age, diabetes) %>% filter(diabetes == 1) %>% arrange(age)
+# y: 3 o: 80
+#diabetes_dataset %>% select(age,heart_disease) %>% filter(heart_disease == 1) %>% arrange(age)
+# y: 2 o: 80
+library(ggplot2)
+library(dplyr)
+
+diabetes_only <- diabetes_dataset %>% select(age, diabetes) %>%  filter(age >= 3, diabetes == 1)
+heart_disease_only <- diabetes_dataset %>% select(age,heart_disease) %>% filter(age >= 2, heart_disease == 1)
+former_smoker_only <- diabetes_dataset %>% select(age, smoking_history) %>%  filter(age >= 7, smoking_history == 'former')
+
+ggplot() +
+  geom_density(data = diabetes_only, aes(x = age), fill = "blue", alpha = 0.5) +  # Diabetes cases
+  geom_density(data = heart_disease_only, aes(x = age), fill = "red", alpha = 0.5) + # Heart disease only
+  geom_density(data = former_smoker_only, aes(x = age), fill = "cyan", alpha = 0.5) +
+  labs(title = "Age Distribution: Diabetes vs. Heart Disease",
+       x = "Age",
+       y = "Density") +
+  scale_x_continuous(breaks = seq(0, 80, by = 5)) +
+  scale_y_continuous(breaks = seq(0.00, 0.07, by = 0.01)) +
+  theme_bw()
+
+```
+```{r}
+library(ggplot2)
+library(dplyr)
+
+DHH_only <- diabetes_dataset %>% select(age, diabetes, heart_disease, hypertension) %>%  filter(age >= 2, diabetes == 1, heart_disease == 1, hypertension == 1)
+No_DHH_only <- diabetes_dataset %>% select(age,heart_disease, diabetes, hypertension) %>% filter(age >= 2, diabetes == 0, heart_disease == 0, hypertension ==0)
+
+
+ggplot() +
+  geom_density(data = DHH_only, aes(x = age), fill = "#660033", alpha = 0.5) +  # Diabetes cases
+  geom_density(data = No_DHH_only , aes(x = age), fill = "#66CCFF", alpha = 0.5) +
+  labs(title = "Age Distribution: Diabetes vs. Heart Disease",
+       x = "Age",
+       y = "Density") +
+  scale_x_continuous(breaks = seq(2, 80, by = 6)) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 13),
+    axis.text = element_text(size = 11),
+  )
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+diabetes_only <- diabetes_dataset %>% select(age, diabetes) %>%  filter(age >= 3, diabetes == 1)
+non_diabetes_only <- diabetes_dataset %>% select(age, diabetes) %>% filter(diabetes == 0, age >= 1)
+heart_disease_only <- diabetes_dataset %>% select(age,heart_disease) %>% filter(age >= 2, heart_disease == 1)
+
+ggplot() +
+  geom_density(data = non_diabetes_only, aes(x = age), fill = "cyan", alpha = 0.5) + # Heart disease only 
+  geom_density(data = heart_disease_only, aes(x = age), fill = "red", alpha = 0.5) +
+  labs(title = "Age Distribution: Diabetes vs. Heart Disease",
+       x = "Age",
+       y = "Density") +
+  scale_x_continuous(breaks = seq(0, 80, by = 6)) +
+  scale_y_continuous(breaks = seq(0.00, 0.07, by = 0.01)) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+```{r}
+library(ggplot2)
+library(dplyr)
+
+diabetes_only <- diabetes_dataset %>% select(age, diabetes) %>%  filter(age >= 3, diabetes == 1)
+non_diabetes_only <- diabetes_dataset %>% select(age, diabetes) %>% filter(diabetes == 0, age >= 1)
+heart_disease_only <- diabetes_dataset %>% select(age,heart_disease) %>% filter(age >= 2, heart_disease == 1)
+
+diabetes_dataset %>% select(age, diabetes, heart_disease) %>% filter(diabetes == 0, age >= 1, heart_disease == 1) %>% arrange(-age)
+#y 2 o:80
+
+diabetes_dataset %>% select(age, diabetes, heart_disease) %>% filter(diabetes == 0, age >= 1, heart_disease == 1) %>% arrange(-age)
+```
+
+#$$$$$$$$$$$$$$$$$$!!!!!!!!
+```{r}
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
+non_healthy_bl <- diabetes_dataset %>% select(blood_glucose_level,diabetes,age) %>% filter(age >= 3, diabetes == 1)
+#h: 300   l: 126 
+
+healthy_bl <- diabetes_dataset %>% select(blood_glucose_level,diabetes,age) %>% filter(age >= 3, diabetes == 0)
+#h: 200  l: 80
+
+interactive_BGL_plot <- ggplot(df, aes(x = diabetes_status, y = blood_glucose_level, fill = diabetes_status)) +
+  geom_boxplot(alpha = 0.5) +
+  labs(title = "Blood Glucose Levels by Diabetes Status",
+       x = "Status",
+       y = "Blood Glucose Level") +
+  scale_y_continuous(breaks = seq(80, 300, by = 20)) +
+  scale_fill_manual(values = c("Diabetes" = "#CC3300", "No Diabetes" = "#99CCFF")) +
+  labs(fill = "Status") +
+  geom_hline(yintercept = c(120, 140), linetype = "line", color = "#0033FF", size = 0.2) +  # Mark Normal Range
+  geom_hline(yintercept = c(180, 250), linetype = "line", color = "#CC3300", size = 0.3) +  # Mark High Range
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 13),
+    axis.text = element_text(size = 11),
+  )
+
+ggplotly(interactive_BGL_plot)
+colnames(diabetes_dataset) 
+```
+
+```{r}
+diabetes_dataset %>% filter(HbA1c_level >= 6.5) %>% group_by(diabetes) %>% summarise(n())
+
+```
+
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
+prooo_diabetes_dataset <- diabetes_dataset %>%
+  select(blood_glucose_level,diabetes, age) %>%
+  filter(age >= 3) %>% 
+  mutate(diabetes = factor(diabetes, levels = c(0, 1), labels = c("No Diabetes", "Diabetes"))) %>% 
+  ggplot(aes(x = diabetes, y = blood_glucose_level, fill = diabetes)) +
+  geom_boxplot(alpha = 0.5) +
+  labs(title = "Blood Glucose Levels by Diabetes Status (age 3-80)",
+       x = "Diabetes Status",
+       y = "Blood Glucose Level") +
+  scale_fill_manual(values = c("Diabetes" = "#CC3300", "No Diabetes" = "#99CCFF")) +
+  labs(fill = "Status") +
+  scale_y_continuous(breaks = seq(80, 300, by = 20)) +
+  geom_hline(yintercept = c(120, 140), linetype = "solid", color = "#0033FF", size = 0.2) +
+  geom_hline(yintercept = c(180, 250), linetype = "solid", color = "#CC3300", size = 0.3) +  # Mark High Range
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(
+    plot.title = element_text(size = 13),
+    axis.text = element_text(size = 11),
+  )
+
+ggplotly(prooo_diabetes_dataset)
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
+diabetes_dataset
+
+non_healthy_bl <- diabetes_dataset %>% select(blood_glucose_level,diabetes,age) %>% filter(age >= 3, diabetes == 1)
+#h: 300   l: 126 
+
+healthy_bl <- diabetes_dataset %>% select(blood_glucose_level,diabetes,age) %>% filter(age >= 3, diabetes == 0)
+#h: 200  l: 80
+
+
+
+```
+
+```{r}
+ggplot() +
+  geom_density(data = non_healthy_bl, aes(x = blood_glucose_level), fill = "red", alpha = 0.5) + 
+  geom_density(data = healthy_bl, aes(x = blood_glucose_level), fill = "green", alpha = 0.5) +
+  labs(title = "diabetes vs glucose levels",
+       x = "blood glucose level",
+       y = "Density") +
+  theme_bw()
+library(ggplot2)
+
+library(ggplot2)
+
+# Density plot with count scaling
+ggplot() +
+  geom_density(data = non_healthy_bl, aes(x = blood_glucose_level, fill = "Diabetes", y = ..count..), alpha = 0.5) +
+  geom_density(data = healthy_bl, aes(x = blood_glucose_level, fill = "No Diabetes", y = ..count..), alpha = 0.5) +
+  labs(title = "Distribution of Blood Glucose Levels",
+       x = "Blood Glucose Level",
+       y = "Count",
+       fill = "Diabetes Status") +
+  theme_minimal()
+
+
+library(ggplot2)
+library(dplyr)
+
+# Assuming you have two datasets:
+# - non_healthy_b1: People with diabetes
+# - healthy_b1: People without diabetes
+
+# Combine both datasets into a single data frame
+df <- bind_rows(
+  non_healthy_bl %>% mutate(diabetes_status = "Diabetes"),
+  healthy_bl %>% mutate(diabetes_status = "No Diabetes")
+)
+
+# Density plot (distribution comparison)
+p1 <- ggplot(df, aes(x = blood_glucose_level, fill = diabetes_status)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Distribution of Blood Glucose Levels",
+       x = "Blood Glucose Level",
+       y = "Density",
+       fill = "Diabetes Status") +
+  theme_minimal()
+
+# Box plot (grouped comparison)
+c
+
+# Scatter plot (individual data points)
+p3 <- ggplot(df, aes(x = diabetes_status, y = blood_glucose_level, color = diabetes_status)) +
+  geom_jitter(alpha = 0.5) +
+  labs(title = "Blood Glucose Levels by Diabetes Status (Scatter)",
+       x = "Diabetes Status",
+       y = "Blood Glucose Level") +
+  theme_minimal()
+
+# Show all plots
+print(p1)  # Density Plot
+print(p2)  # Box Plot
+print(p3)  # Scatter Plot
+
+```
+
+
+
+```{r, echo=FALSE,fig.width=7, fig.height=6, fig.align="center"}
+overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE)
+
+BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = bmi, fill = factor(hypertension))) +
+  geom_violin(alpha = 0.7) +
+  geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", linewidth = 0.3) +
+  scale_fill_manual(values = c("azure3", "coral3")) +
+  scale_y_continuous(breaks = seq(10.01, 95.69, by = 5)) +
+  labs(title = "BMI Distribution by Hypertension Status",
+       x = "Hypertension Status (0 = No, 1 = Yes)",
+       y = "BMI",
+       fill = "Hypertension") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(
+    plot.title = element_text(size = 13),
+    axis.text = element_text(size = 11),
+  )
+
+ggplotly(BMI_distribution)
+```
+
+
+```{r, echo=FALSE,fig.width=7, fig.height=6, fig.align="center"}
+overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE)
+
+BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = bmi, fill = factor(hypertension))) +
+  geom_violin(alpha = 0.5) +
+  geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", linewidth = 0.2) +
+  scale_fill_manual(values = c("darkslategray3", "darkred"), labels = c("No Hypertension", "Hypertension")) +
+  labs(title = "BMI Distribution by Hypertension Status",
+       x = "Hypertension Status (0 = No, 1 = Yes)",
+       y = "BMI",
+       fill = "Hypertension") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 15),
+    axis.text = element_text(size = 11),
+    legend.text = element_text(size = 11)
+  )
+
+ggplotly(BMI_distribution)
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
+library(ggplot2)
+library(dplyr)
+
+diabetes_dataset_filtered_bmi <- diabetes_dataset %>%
+  mutate(bmi_filtered = ifelse(bmi >= 2, bmi, NA))
+
+diabetes_only <- diabetes_dataset_filtered_bmi %>%
+  select(age, bmi_filtered, diabetes) %>%
+  filter(age >= 2, diabetes == 1) %>%
+  mutate(condition = "Diabetes Only")
+
+heart_disease_only <- diabetes_dataset_filtered_bmi %>%
+  select(age, bmi_filtered, heart_disease) %>%
+  filter(age >= 2, heart_disease == 1) %>%
+  mutate(condition = "Heart Disease Only")
+
+combined_data <- bind_rows(diabetes_only, heart_disease_only)
+
+common_bmi <- diabetes_dataset_filtered_bmi %>%
+  filter(bmi_filtered >= 25.01 & bmi_filtered <= 30.01) %>%
+  count(bmi_filtered) %>%
+  arrange(desc(n))  # Sort by highest count
+
+most_common_bmi <- common_bmi$bmi_filtered[1]  # Extract the most frequent BMI
+print(most_common_bmi) 
+
+ggplot(combined_data) +
+  geom_point(aes(x = age, y = bmi_filtered, color = condition), alpha = 0.3) +  # Scatter plot with BMI
+  geom_jitter(aes(x = age, y = bmi_filtered, color = condition), width = 0.1, height = 0.1, alpha = 0.3) +
+  geom_hline(yintercept = most_common_bmi, linetype = "solid", color = "red", size = 0.3) +  # Horizontal line marking common BMI
+  scale_color_manual(values = c("Diabetes Only" = "cornflowerblue", "Heart Disease Only" = "darkorchid4")) + 
+  scale_x_continuous(breaks = seq(0, 80, by = 10)) + 
+  scale_y_continuous(breaks = seq(10.01, 95.69, by = 10)) +
+  labs(title = "BMI vs. Age Across Diabetes & Heart Disease",
+       x = "Age",
+       y = "BMI",
+       color = "Condition") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    axis.text = element_text(size = 11),
+    legend.text = element_text(size = 11),
+    plot.title = element_text(size = 13)
+  )
+
+#ggplotly(interactive_combined_data)
+```
+
+
+
+
+
+
+
+
+# create horizontal lines with this info
+# Prediabetes & Type 2 Diabetes Risk:Often associated with BMI ≥25 (overweight or obese categories).
+# Normal-Weight Diabetes: Some individuals develop diabetes even with a BMI <25, due to factors like genetics, visceral fat, and metabolic health
+# Higher BMI & Diabetes Progression: A BMI ≥30 significantly increases the risk of insulin resistance and complications
+```
+
+
+
+
