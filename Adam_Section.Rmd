@@ -66,7 +66,7 @@ smoking_diabetes_dataset
 #mutate a column to create a percentage per category;
 #select desired columns
 
-smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_dataset, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, diabetes, total, Percentage)
+smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_dataset, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people *100, digits = 2)) %>% select(smoking_history, diabetes, total, Percentage)
 
 smoking_diabetes_percentage
 ```
