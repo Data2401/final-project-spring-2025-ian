@@ -198,6 +198,7 @@ BGL_status_diabetes_dataset <- diabetes_dataset %>%
     axis.text = element_text(size = 11),
   )
 
+
 ggplotly(BGL_status_diabetes_dataset)
 ```
 
