@@ -228,43 +228,8 @@ ggplot(combined_data) +
 
 ```
 
-# Smokers go brrr
 
-In the smoking data there are 6 unique values
 
-1)  Never: Has Never smoked
-2)  Not current: Has smoked but is not currently smoking
-3)  Former: Has quit smoking (abstained for longer than)
-4)  Current: Is currently a smoker
-5)  Ever: Has ever smoked regardless of current smoking status
-6)  No Info: No smoking history information available
-
-The total amount of people who fall into each category is as follows;
-
-1)  Never: 35095
-2)  Not current: 6447
-3)  Former: 9352
-4)  Current: 9286
-5)  Ever: 4004
-6)  No Info: 35816
-
-There is quite a sizable amount of people in the No info category.
-
-The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help clean up the data, we can filter 'No Info' people out. When we do that we get `r nrow(diabetes_dataset %>% filter(smoking_history != 'No Info'))`.
-
-```{r smoking data, echo=FALSE}
-
-# Figure out the unique categories of smoking history 
-unique(diabetes_dataset$smoking_history)
-
-# Count amount of people who belong to each unique category
-diabetes_dataset %>% group_by(smoking_history) %>% summarise(total_people = n())
-
-smoking_diabetes_dataset <- diabetes_dataset %>% 
-  filter(smoking_history != 'No Info') %>%  
-  group_by(smoking_history, diabetes) %>%  
-  summarise(total = n())
-```
 
 ### A relation to BMI and Heart Disease
 Each person within this scale has heart disease. Here a comparison is made between declared underweight and overweight people, grouped by sex, based on a BMI scale. There's a significant increase in population percentage for those who are considered overweight and that have heart disease. With visual aid, it can be concluded that as weight increases, chances of heart disease will increase.
@@ -321,41 +286,9 @@ ggplot(bmi_heart_gender,
 
 ```
 
-```{r, echo=FALSE}
-library(dplyr)
-library(ggplot2)
 
-# Prepare the data
-bmi_heart_gender <- diabetes_dataset %>%
-  filter(heart_disease == 1) %>%
-  mutate(
-    bmi_category = case_when(
-      bmi <= 19 ~ "Underweight",
-      bmi >= 30 ~ "Overweight",
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  filter(!is.na(bmi_category)) %>%
-  group_by(gender, bmi_category) %>%
-  summarise(count = n(), .groups = 'drop') %>%
-  group_by(gender) %>%
-  mutate(percentage = round(100 * count / sum(count), 1))
 
-# Plot
-ggplot(bmi_heart_gender, aes(x = bmi_category, y = count, fill = gender)) +
-  geom_bar(stat = "identity", position = position_dodge(width = 0.7)) +
-  geom_text(aes(label = paste0(count, " (", percentage, "%)")),
-            vjust = -0.5,
-            position = position_dodge(width = 0.7)) +
-  labs(
-    title = "Count and Percentage of Heart Disease Cases by Gender and BMI Category",
-    x = "BMI Category",
-    y = "Count of People with Heart Disease",
-    fill = "Gender"
-  ) +
-  theme_minimal()
 
-```
 
 ```{r, echo=FALSE}
 # load needed packages
@@ -408,7 +341,7 @@ ggplot(summary_df, aes(x = sex, y = count, fill = sex)) +
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 library(dplyr)
 library(ggplot2)
 library(scales)
