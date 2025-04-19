@@ -1,6 +1,6 @@
 ---
 title: "Adam_Section_Go_Brrr"
-output: html_document
+output: ioslides_presentation
 date: "2025-04-18"
 ---
 
@@ -9,16 +9,17 @@ knitr::opts_chunk$set(echo = FALSE)
 
 library(tidyverse)
 library(ggplot2)
-library(scales)
-library(plotly)
 
-library(readr)
-diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
-#View(diabetes_dataset)
+```
+
+One of the more interesting bits of data is that there are individuals that have an a1c of over 6.5 yet are not considered diabetic.
+
+```{r hbA1C vs Blood Sugar}
+
 ```
 
 
-## Smokers go brrr
+# Smokers go brrr# Smokers go brrrgeom_boxplot()
 
 In the smoking data there are 6 unique values
 
@@ -69,9 +70,9 @@ smoking_diabetes_dataset
 #mutate a column to create a percentage per category;
 #select desired columns
 
-smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_dataset, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people, digits = 4)) %>% select(smoking_history, diabetes, total, Percentage)
+smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_dataset, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people *100, digits = 2)) %>% select(smoking_history, diabetes, total, Percentage)
 
-smoking_diabetes_percentage 
+smoking_diabetes_percentage
 ```
 
 Now we can graph the relationship between smoking and diabetes as separated by smoking category.
@@ -82,31 +83,24 @@ library(plotly)
 
 #Create initial graph about smoking and diabetes
 
-smoking_diabetes_graph <- ggplot(smoking_diabetes_percentage,
-       aes(x    = smoking_history,
-           y    = total,
-           fill = factor(diabetes))) +
-  geom_col(position = position_dodge(width = 0.9)) +
- 
-  # add percent labels
-  geom_text(aes(label = percent(Percentage, accuracy = .1)),
-            position = position_dodge(width = 1),
-            vjust    = .4,        # nudge above bar
-            size     = 3,
-            hjust    = -.1, size = 3) +
-            
- 
-  coord_flip() +
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  labs(
-    title   = "Smoking History and Diabetes Relationship",
-    x       = "Smoking History",
-    y       = "Count of People",
-    fill    = "Has Diabetes",
-    caption = "1 = diabetes, 0 = no diabetes"
+smoking_diabetes_graph <- ggplot(smoking_diabetes_percentage) + 
+  geom_col(aes(x = smoking_history, y = total, fill = as.factor(diabetes)), position = 'dodge') 
+
+smoking_diabetes_graph <- smoking_diabetes_graph + coord_flip() + labs(
+  title = 'Smoking History and Diabetes Relationship',
+  y = 'People',
+  x = 'Smoking History',
+  fill = 'Has Diabetes',
+  caption = "1 indicates diabetes, 0 indicates no diabetes"
   ) 
 
 smoking_diabetes_graph
+```
+
+
+```{r Smoking on that percentage pack tonight tonight}
+
+ggplot(smoking_diabetes_percentage) + geom_col(aes(x = smoking_history, y = Percentage, fill = as.factor(diabetes)))
 ```
 
 
@@ -119,7 +113,7 @@ smoking_heart_disease_data <- diabetes_dataset %>%
   summarise(total = n())
 smoking_heart_disease_data
 
-smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_disease_data, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people, digits = 4)) %>% select(smoking_history, heart_disease, total, Percentage)
+smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_disease_data, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people *100, digits = 2)) %>% select(smoking_history, heart_disease, total, Percentage)
 
 smoking_heart_disease_percentage
 
@@ -129,29 +123,7 @@ smoking_heart_disease_percentage
 
 
 ```{r}
-ggplot(smoking_heart_disease_percentage,
-       aes(x    = smoking_history,
-           y    = total,
-           fill = factor(heart_disease))) +
-  geom_col(position = position_dodge(width = 0.9)) +
- 
-  # add percent labels
-  geom_text(aes(label = percent(Percentage, accuracy = .1)),
-            position = position_dodge(width = 1),
-            vjust    = .4,        # nudge above bar
-            size     = 3,
-            hjust    = -.1, size = 3) +
-            
- 
-  coord_flip() +
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  labs(
-    title   = "Smoking History and Heart Disease Relationship",
-    x       = "Smoking History",
-    y       = "Count of People",
-    fill    = "Has Heart Disease",
-    caption = "1 = Heart Disease, 0 = No Heart Disease"
-  ) 
+
 
 ```
 
@@ -165,69 +137,15 @@ smoking_hypertension_data <- diabetes_dataset %>%
   summarise(total = n())
 smoking_hypertension_data
 
-smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertension_data, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people, digits = 4)) %>% select(smoking_history, hypertension, total, Percentage)
+smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertension_data, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people *100, digits = 2)) %>% select(smoking_history, hypertension, total, Percentage)
 
 smoking_hypertension_percentage
-```
-
-
-```{r Hypertension Graph}
-ggplot(smoking_hypertension_percentage,
-       aes(x    = smoking_history,
-           y    = total,
-           fill = factor(hypertension))) +
-  geom_col(position = position_dodge(width = 0.9)) +
- 
-  # add percent labels
-  geom_text(aes(label = percent(Percentage, accuracy = .1)),
-            position = position_dodge(width = 1),
-            vjust    = .4,        # nudge above bar
-            size     = 3,
-            hjust    = -.1, size = 3) +
-            
- 
-  coord_flip() +
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  labs(
-    title   = "Smoking History and Hypertension Relationship",
-    x       = "Smoking History",
-    y       = "Count of People",
-    fill    = "Has Hypertension",
-    caption = "1 = Hypertension, 0 = No Hypertension"
-  ) 
-
 ```
 
 
 
 
 ```{r}
-library(scales)
-
-# 2) Plot with geom_col + geom_text
-ggplot(smoking_diabetes_percentage,
-       aes(x    = smoking_history,
-           y    = total,
-           fill = factor(diabetes))) +
-  geom_col(position = position_dodge(width = 0.9)) +
- 
-  # add percent labels
-  geom_text(aes(label = percent(Percentage, accuracy = .1)),
-            position = position_dodge(width = 1),
-            vjust    = .4,        # nudge above bar
-            size     = 3,
-            hjust    = -.1, size = 3) +
-            
- 
-  coord_flip() +
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  labs(
-    title   = "Smoking History and Diabetes Relationship",
-    x       = "Smoking History",
-    y       = "Count of People",
-    fill    = "Has Diabetes",
-    caption = "1 = diabetes, 0 = no diabetes"
-  ) 
 
 
 ```
