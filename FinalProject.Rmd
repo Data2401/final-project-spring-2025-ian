@@ -148,6 +148,29 @@ ggplotly(BMI_distribution)
 
 The graph below is separated by whether or not a person has hypertension. With the comparison of BMI as the range, it's seen that majority of people with and without hypertension lie within a BMI range of 25-29. Notice that for people with hypertension, the desnity population above the red line is greater than that of people without hypertension; indicating that there's a larger of population of people with hypertension that have a larger BMI  
 
+```{r}
+library(ggplot2)
+library(dplyr)
+
+DHH_only <- diabetes_dataset %>% select(age, diabetes, heart_disease, hypertension) %>%  filter(age >= 2, diabetes == 1, heart_disease == 1, hypertension == 1)
+No_DHH_only <- diabetes_dataset %>% select(age,heart_disease, diabetes, hypertension) %>% filter(age >= 2, diabetes == 0, heart_disease == 0, hypertension ==0)
+
+
+ggplot() +
+  geom_density(data = DHH_only, aes(x = age), fill = "#660033", alpha = 0.5) +  # Diabetes cases
+  geom_density(data = No_DHH_only , aes(x = age), fill = "#66CCFF", alpha = 0.5) +
+  labs(title = "Age Distribution: Diabetes vs. Heart Disease",
+       x = "Age",
+       y = "Density") +
+  scale_x_continuous(breaks = seq(2, 80, by = 6)) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 13),
+    axis.text = element_text(size = 11),
+  )
+```
+```
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=7, fig.height=6}
