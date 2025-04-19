@@ -54,7 +54,7 @@ The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help
 unique(diabetes_dataset$smoking_history)
 
 # Count amount of people who belong to each unique category
-xyz <- diabetes_dataset %>% filter(smoking_history != 'No Info') %>%  group_by(smoking_history) %>% summarise(total_people = n())
+smoking_tally <- diabetes_dataset %>% filter(smoking_history != 'No Info') %>%  group_by(smoking_history) %>% summarise(total_people = n())
 
 #group diabetic vs non diabetic people together
 smoking_diabetes_dataset <- diabetes_dataset %>%
@@ -84,16 +84,56 @@ smoking_diabetes_graph <- adams_first_graph + coord_flip() + labs(
 smoking_diabetes_graph
 ```
 ```{r Smoking on that percentage pack tonight tonight}
-smoking_data_Percentage
+smoking_diabetes_percentage_graph
 
-ggplot(smoking_data_Percentage, aes(smoking_history, Percentage, colour = as.factor(diabetes))) + geom_count()
+ggplot(smoking_data_percentage, aes(smoking_history, Percentage, colour = as.factor(diabetes))) + geom_count()
 ```
+
+
 
 
 ```{r heart disease and smoking}
-smoking_heart_disease_dataset <- diabetes_dataset %>%
+smoking_heart_disease_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, heart_disease) %>%  
   summarise(total = n())
-smoking_heart_disease_dataset
+smoking_heart_disease_data
+
+smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_disease_data, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, heart_disease, total, Percentage)
+
+smoking_heart_disease_percentage
+
 ```
+
+
+
+
+```{r}
+
+
+```
+
+
+
+
+```{r Smoking and hypertension}
+smoking_hypertension_data <- diabetes_dataset %>%
+  filter(smoking_history != 'No Info') %>%  
+  group_by(smoking_history, hypertension) %>%  
+  summarise(total = n())
+smoking_hypertension_data
+
+smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertension_data, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, hypertension, total, Percentage)
+
+smoking_hypertension_percentage
+```
+
+
+
+
+```{r}
+
+
+```
+
+
