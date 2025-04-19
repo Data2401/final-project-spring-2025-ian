@@ -122,7 +122,7 @@ HbA1c_counts <- HbA1c_by_gender %>%
 
 # Create stacked bar plot with percentage labels
 HbA1c_counts_plotly <- ggplot(HbA1c_counts, aes(x = gender, y = n, fill = HbA1c_category)) +
-  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.1, alpha = 0.6) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.1, alpha = 0.5) +
   geom_text(aes(label = paste0(round(percent, 1), "%")), 
             position = position_fill(vjust = 0.5)) +
   scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk", 
@@ -211,7 +211,6 @@ BGL_status_diabetes_dataset <- diabetes_dataset %>%
 ggplotly(BGL_status_diabetes_dataset)
 ```
 
-
 ## BMI vs. Age Across Diabetes & Heart Disease Plot
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
@@ -239,7 +238,6 @@ common_bmi <- diabetes_dataset_filtered_bmi %>%
   arrange(desc(n))  # Sort by highest count
 
 most_common_bmi <- common_bmi$bmi_filtered[1]  # Extract the most frequent BMI
-print(most_common_bmi) 
 
 ggplot(combined_data) +
   geom_point(aes(x = age, y = bmi_filtered, color = condition), alpha = 0.3) +  # Scatter plot with BMI
@@ -261,7 +259,6 @@ ggplot(combined_data) +
   )
 
 ```
-
 
 # Smokers go brrr
 
