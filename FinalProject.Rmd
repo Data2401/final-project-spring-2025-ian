@@ -170,8 +170,6 @@ ggplot() +
     axis.text = element_text(size = 11),
   )
 ```
-```
-
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=7, fig.height=6}
 library(dplyr)
