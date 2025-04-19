@@ -435,3 +435,89 @@ ggplot(df_summary, aes(x = HbA1c_cat,
 
 ```
 
+
+
+
+
+
+
+
+# Smokers go brrr# Smokers go brrrgeom_boxplot()
+
+In the smoking data there are 6 unique values
+
+1)  Never: Has Never smoked
+2)  Not current: Has smoked but is not currently smoking
+3)  Former: Has quit smoking (abstained for longer than)
+4)  Current: Is currently a smoker
+5)  Ever: Has ever smoked regardless of current smoking status
+6)  No Info: No smoking history information available
+
+The total amount of people who fall into each category is as follows;
+
+1)  Never: 35095
+2)  Not current: 6447
+3)  Former: 9352
+4)  Current: 9286
+5)  Ever: 4004
+6)  No Info: 35816
+
+There is quite a sizable amount of people in the No info category.
+
+The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help clean up the data, we can filter 'No Info' people out. When we do that we get `r nrow(diabetes_dataset %>% filter(smoking_history != 'No Info'))`.
+
+```{r Cleaning smoking data}
+
+# Figure out the unique categories of smoking history
+unique(diabetes_dataset$smoking_history)
+
+# Count amount of people who belong to each unique smoking category
+#Omit No info
+
+smoking_tally <- diabetes_dataset %>% filter(smoking_history != 'No Info') %>%  group_by(smoking_history) %>% summarise(total_people = n())
+
+#group diabetic vs non diabetic people together
+
+smoking_diabetes_dataset <- diabetes_dataset %>%
+  filter(smoking_history != 'No Info') %>%  
+  group_by(smoking_history, diabetes) %>%  
+  summarise(total = n())
+
+smoking_diabetes_dataset
+
+# Inner join tally data with diabetic grouped data;
+#mutate a column to create a percentage per category;
+#select desired columns
+
+smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_dataset, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, diabetes, total, Percentage)
+
+smoking_diabetes_percentage
+```
+
+Now we can graph the relationship between smoking and diabetes as separated by smoking category.
+
+```{r Plotting smoking data}
+library(ggplot2)
+library(plotly)
+
+#Create initial graph about smoking and diabetes
+
+smoking_diabetes_graph <- ggplot(smoking_diabetes_percentage) + 
+  geom_col(aes(x = smoking_history, y = total, fill = as.factor(diabetes)), position = 'dodge') 
+
+smoking_diabetes_graph <- smoking_diabetes_graph + coord_flip() + labs(
+  title = 'Smoking History and Diabetes Relationship',
+  y = 'People',
+  x = 'Smoking History',
+  fill = 'Has Diabetes',
+  caption = "1 indicates diabetes, 0 indicates no diabetes"
+  ) 
+
+smoking_diabetes_graph
+```
+
+
+```{r Smoking on that percentage pack tonight tonight}
+
+ggplot(smoking_diabetes_percentage) + geom_col(aes(x = smoking_history, y = Percentage, fill = as.factor(diabetes)))
+```
