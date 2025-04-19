@@ -92,6 +92,8 @@ smoking_diabetes_graph <- smoking_diabetes_graph + coord_flip() + labs(
 
 smoking_diabetes_graph
 ```
+
+
 ```{r Smoking on that percentage pack tonight tonight}
 
 ggplot(smoking_diabetes_percentage) + geom_col(aes(x = smoking_history, y = Percentage, fill = as.factor(diabetes)))
