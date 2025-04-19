@@ -6,10 +6,10 @@ output: html_document
 ---
 ### Introduction:
 
-  Within this analysis, we'll investigate factors and 
+  Within this analysis, we'll investigate factors correlated to diabetes. With a data set of 100,000 people, this investigation allows us to display relations between ages
 
 
-knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+
 
 
 
