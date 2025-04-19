@@ -104,15 +104,16 @@ HbA1c_counts_plotly <- ggplot(HbA1c_counts, aes(x = gender, y = n, fill = HbA1c_
 ggplotly(HbA1c_counts_plotly)
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,fig.width=7, fig.height=5}
 library(ggplot2)
 library(dplyr)
+library(plotly)
 
 DHH_only <- diabetes_dataset %>% select(age, diabetes, heart_disease, hypertension) %>%  filter(age >= 2, diabetes == 1, heart_disease == 1, hypertension == 1)
 No_DHH_only <- diabetes_dataset %>% select(age,heart_disease, diabetes, hypertension) %>% filter(age >= 2, diabetes == 0, heart_disease == 0, hypertension ==0)
 
 
-ggplot() +
+interactive_DHH <- ggplot() +
   geom_density(data = DHH_only, aes(x = age), fill = "#660033", alpha = 0.5) +  # Diabetes cases
   geom_density(data = No_DHH_only , aes(x = age), fill = "#66CCFF", alpha = 0.5) +
   labs(title = "Age Distribution: Diabetes vs. Heart Disease",
@@ -125,6 +126,8 @@ ggplot() +
     plot.title = element_text(size = 13),
     axis.text = element_text(size = 11),
   )
+
+ggplotly(interactive_DHH)
 ```
 
 ### BMI Distribution by Hypertension Status Plot
