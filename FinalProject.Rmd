@@ -308,7 +308,9 @@ ggplot(bmi_heart_gender,
 ```
 
 
+### An excpetion?
 
+The data here is heavily dependent on BMI scale. It is important to note that BMI is not really a great determination for those who have diabetes, but there is a general trend within the data that people who have a BMI over 30 are more likely to be diabetic. 
 
 
 ```{r, echo=FALSE}
