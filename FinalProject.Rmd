@@ -6,8 +6,7 @@ output: html_document
 ---
 ### Introduction:
 
-  Within this analysis, we'll investigate factors correlated to diabetes. With a data set of 100,000 people, this investigation allows us to display relations between ages, HbA1c levels, smoking history, and glucose levels. With a wide range of data points, we begin to question if there are trends within this data. Our goal is 
-
+  Within this analysis, we'll investigate factors correlated to diabetes. With a data set of 100,000 people, this investigation allows us to display relations between ages, HbA1c levels, smoking history, and glucose levels. With a wide range of data points, we begin to question if there are trends within this data that match our general understanding of diabetes. Our goal is to asses which of the 9 variables play a stronger role to the development of diabetes and if we can prove trends to better support our assumptions of this data. Through data visualization, chart analysis, and numerical analysis we will be able to present this data to convicne a general audience of the important factors that contribute to diabteic trends. 
 
 
 
@@ -147,6 +146,10 @@ BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = b
 ggplotly(BMI_distribution)
 ```
 
+The graph below is separated by whether or not a person has hypertension. With the comparison of BMI as the range, it's seen that majority of people with and without hypertension lie within a BMI range of 25-29. Notice that for people with hypertension, the desnity population above the red line is greater than that of people without hypertension; indicating that there's a larger of population of people with hypertension that have a larger BMI  
+
+
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=7, fig.height=6}
 library(dplyr)
 library(ggplot2)
@@ -249,7 +252,7 @@ There is quite a sizable amount of people in the No info category.
 
 The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help clean up the data, we can filter 'No Info' people out. When we do that we get `r nrow(diabetes_dataset %>% filter(smoking_history != 'No Info'))`.
 
-```{r Cleaning smoking data, echo=FALSE}
+```{r smoking data, echo=FALSE}
 
 # Figure out the unique categories of smoking history 
 unique(diabetes_dataset$smoking_history)
