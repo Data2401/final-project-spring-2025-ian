@@ -266,48 +266,58 @@ smoking_diabetes_dataset <- diabetes_dataset %>%
   summarise(total = n())
 ```
 
-Now we can graph the relationship between
+### A relation to BMI and Heart Disease
+Each person within this scale has heart disease. Here a comparison is made between declared underweight and overweight people, grouped by sex, based on a BMI scale. There's a significant increase in population percentage for those who are considered overweight and that have heart disease. With visual aid, it can be concluded that as weight increases, chances of heart disease will increase.
 
 ```{r, echo=FALSE}
-
-library(dplyr)
 library(ggplot2)
+library(dplyr)
 
-# Data prep
+
 bmi_heart_gender <- diabetes_dataset %>%
   filter(heart_disease == 1) %>%
   mutate(
     bmi_category = case_when(
       bmi <= 19 ~ "Underweight",
       bmi >= 30 ~ "Overweight",
-      TRUE ~ NA_character_
+      TRUE      ~ NA_character_
     )
   ) %>%
   filter(!is.na(bmi_category)) %>%
   group_by(gender, bmi_category) %>%
   summarise(count = n(), .groups = 'drop') %>%
   group_by(gender) %>%
-  mutate(percentage = round(100 * count / sum(count), 1))
+  mutate(percentage = round(100 * count / sum(count), 1)) %>%
+  ungroup()
 
-# Make sure the bmi_category is an ordered factor so the line connects correctly
 bmi_heart_gender$bmi_category <- factor(bmi_heart_gender$bmi_category,
                                         levels = c("Underweight", "Overweight"))
 
-# Dot + Line plot
-ggplot(bmi_heart_gender, aes(x = bmi_category, y = count, group = gender, color = gender)) +
-  geom_line(aes(group = gender), position = position_dodge(width = 0.5), linewidth = 1) +
-  geom_point(size = 5, position = position_dodge(width = 0.5)) +
+
+max_ct <- max(bmi_heart_gender$count)
+y_breaks <- pretty(c(0, max_ct), n = 10)    # ~10 ticks
+
+ggplot(bmi_heart_gender,
+       aes(x = bmi_category,
+           y = count,
+           group = gender,
+           color = gender)) +
+  geom_line(position = position_dodge(width = 0.5), linewidth = 1) +
+  geom_point(position = position_dodge(width = 0.5), size = 5) +
   geom_text(aes(label = paste0(count, " (", percentage, "%)")),
             vjust = -1,
             position = position_dodge(width = 0.5)) +
+  scale_y_continuous(
+    breaks = y_breaks,
+    expand = expansion(mult = c(0, .05))   # so labels don’t get clipped
+  ) +
   labs(
-    title = "Heart Disease Cases by Gender and BMI Category (Dot-Line Plot)",
-    x = "BMI Category",
-    y = "Count of People with Heart Disease",
+    title = "Heart Disease Cases by Gender and BMI Category",
+    x     = "BMI Category",
+    y     = "Count of People with Heart Disease",
     color = "Gender"
   ) +
   theme_minimal()
-
 
 ```
 
