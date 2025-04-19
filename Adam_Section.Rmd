@@ -50,6 +50,10 @@ unique(diabetes_dataset$smoking_history)
 # Count amount of people who belong to each unique smoking category
 #Omit No info
 
+smoking_data <- diabetes_dataset %>% filter(smoking_history != 'No Info')
+
+
+
 smoking_tally <- diabetes_dataset %>% filter(smoking_history != 'No Info') %>%  group_by(smoking_history) %>% summarise(total_people = n())
 
 #group diabetic vs non diabetic people together
