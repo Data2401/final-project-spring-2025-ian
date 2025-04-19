@@ -1,6 +1,6 @@
 ---
 title: "Adam_Section_Go_Brrr"
-output: ioslides_presentation
+output: html_document
 date: "2025-04-18"
 ---
 
@@ -16,7 +16,6 @@ library(readr)
 diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
 #View(diabetes_dataset)
 ```
-
 
 ## Smokers go brrr
 
@@ -76,9 +75,7 @@ smoking_diabetes_percentage
 
 Now we can graph the relationship between smoking and diabetes as separated by smoking category.
 
-```{r Plotting smoking data}
-library(ggplot2)
-library(plotly)
+```{r Plot smoking}
 
 #Create initial graph about smoking and diabetes
 
@@ -109,10 +106,7 @@ smoking_diabetes_graph <- ggplot(smoking_diabetes_percentage,
 smoking_diabetes_graph
 ```
 
-
-
-
-```{r heart disease and smoking}
+```{r heart disease and smokingggg}
 smoking_heart_disease_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, heart_disease) %>%  
@@ -124,9 +118,6 @@ smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_dise
 smoking_heart_disease_percentage
 
 ```
-
-
-
 
 ```{r}
 ggplot(smoking_heart_disease_percentage,
@@ -155,9 +146,6 @@ ggplot(smoking_heart_disease_percentage,
 
 ```
 
-
-
-
 ```{r Smoking and hypertension}
 smoking_hypertension_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
@@ -169,7 +157,6 @@ smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertensio
 
 smoking_hypertension_percentage
 ```
-
 
 ```{r Hypertension Graph}
 ggplot(smoking_hypertension_percentage,
@@ -197,9 +184,6 @@ ggplot(smoking_hypertension_percentage,
   ) 
 
 ```
-
-
-
 
 ```{r}
 library(scales)
@@ -232,12 +216,9 @@ ggplot(smoking_diabetes_percentage,
 
 ```
 
-
-
-
 Now we can graph the relationship between smoking and diabetes as separated by smoking category.
 
-```{r Plotting smoking data}
+```{r Plotting smoking brrrr}
 library(ggplot2)
 library(plotly)
 
@@ -257,14 +238,10 @@ smoking_diabetes_graph <- smoking_diabetes_graph + coord_flip() + labs(
 smoking_diabetes_graph
 ```
 
-
 ```{r Smoking on that percentage pack tonight tonight}
 
 ggplot(smoking_diabetes_percentage) + geom_col(aes(x = smoking_history, y = Percentage, fill = as.factor(diabetes)))
 ```
-
-
-
 
 ```{r heart disease and smoking}
 smoking_heart_disease_data <- diabetes_dataset %>%
@@ -279,18 +256,12 @@ smoking_heart_disease_percentage
 
 ```
 
-
-
-
 ```{r}
 
 
 ```
 
-
-
-
-```{r Smoking and hypertension}
+```{r Smoking and hypertensionnn}
 smoking_hypertension_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, hypertension) %>%  
@@ -302,13 +273,7 @@ smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertensio
 smoking_hypertension_percentage
 ```
 
-
-
-
 ```{r}
 
 
 ```
-
-
-
