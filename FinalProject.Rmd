@@ -193,7 +193,7 @@ BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = b
     axis.text = element_text(size = 11),
   )
 
-# make our plot interactive wiht ggplotly
+# make our plot interactive with ggplotly
 ggplotly(BMI_distribution)
 ```
 
@@ -206,7 +206,16 @@ library(ggplot2)
 library(plotly)
 library(knitr) 
 
-BGL_status_diabetes_dataset <- diabetes_dataset %>%
+# these are the variables I worked with to create this table
+table_diabetes_no_diabetes <- diabetes_dataset %>%
+  select(blood_glucose_level,diabetes, age) %>%
+  filter(age >= 3) %>% 
+  mutate(diabetes = factor(diabetes, levels = c(0, 1), labels = c("No Diabetes", "Diabetes")))
+
+# here I show the table
+kable(head(table_diabetes_no_diabetes, 5), caption = "96,713 x 3 (first 5 rows)")
+
+diabetes_and_no_diabetes_plot <- diabetes_dataset %>%
   select(blood_glucose_level,diabetes, age) %>%
   filter(age >= 3) %>% 
   mutate(diabetes = factor(diabetes, levels = c(0, 1), labels = c("No Diabetes", "Diabetes"))) %>% 
@@ -227,7 +236,8 @@ BGL_status_diabetes_dataset <- diabetes_dataset %>%
     axis.text = element_text(size = 11),
   )
 
-ggplotly(BGL_status_diabetes_dataset)
+# make our plot interactive with ggplotly
+ggplotly(diabetes_and_no_diabetes_plot)
 ```
 
 ## BMI vs. Age Across Diabetes & Heart Disease Plot
