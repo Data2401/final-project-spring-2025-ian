@@ -172,11 +172,12 @@ library(ggplot2)
 library(plotly)
 library(knitr) 
 
-kable(head(diabetes_dataset, 5), caption = "10,000 x 9 (first 5 rows)")
+kable(head(diabetes_dataset, 5), caption = "10,000 x 9 (first 5 rows)") # adjust my diabetes_dataset table
 
-overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE)
+overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE) # new variable for the median of bmi to obtain horizontal red line
 
-BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = bmi, fill = factor(hypertension))) +
+#create a violin plot, hypertension is selected as our x variable and bmi as our y variable
+BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = bmi, fill = factor(hypertension))) + # use factor so that hypertension can be treated as a factor
   geom_violin(alpha = 0.6) +
   geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", linewidth = 0.3) +
   scale_fill_manual(values = c("azure3", "#CC6600")) +
@@ -192,6 +193,7 @@ BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = b
     axis.text = element_text(size = 11),
   )
 
+# make our plot interactive wiht ggplotly
 ggplotly(BMI_distribution)
 ```
 
