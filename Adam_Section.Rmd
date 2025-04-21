@@ -30,7 +30,7 @@ In the smoking data there are 6 unique values
 5)  Ever: Has ever smoked regardless of current smoking status
 6)  No Info: No smoking history information available
 
----
+
 The total amount of people who fall into each category is as follows;
 
 1)  Never: 35095
