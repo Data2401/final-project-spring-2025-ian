@@ -28,6 +28,7 @@ In the smoking data there are 6 unique values
 5)  Ever: Has ever smoked regardless of current smoking status
 6)  No Info: No smoking history information available
 
+---
 The total amount of people who fall into each category is as follows;
 
 1)  Never: 35095
@@ -36,7 +37,7 @@ The total amount of people who fall into each category is as follows;
 4)  Current: 9286
 5)  Ever: 4004
 6)  No Info: 35816
-
+---
 There is quite a sizable amount of people in the No info category.
 
 The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help clean up the data, we can filter 'No Info' people out. When we do that we get `r nrow(diabetes_dataset %>% filter(smoking_history != 'No Info'))`.
@@ -44,7 +45,7 @@ The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help
 ```{r Cleaning smoking data}
 
 # Figure out the unique categories of smoking history
-unique(diabetes_dataset$smoking_history)
+#unique(diabetes_dataset$smoking_history)
 
 # Count amount of people who belong to each unique smoking category
 #Omit No info
@@ -52,7 +53,11 @@ unique(diabetes_dataset$smoking_history)
 smoking_tally <- diabetes_dataset %>% filter(smoking_history != 'No Info') %>%  group_by(smoking_history) %>% summarise(total_people = n())
 ```
 
-Further 
+# Sumarizing diabetes and smoking history
+
+The data was then summarized to gather the total counts belonging to each smoking category and further grouped by diabetes status.
+
+A percentage per smoking category with diabetes is then calculated dividing the count with diabetes by the total count in each smoking category.
 
 ```{r smoking and diabetes}
 #group diabetic vs non diabetic people together
@@ -72,6 +77,7 @@ smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_datase
 
 smoking_diabetes_percentage
 ```
+# Graphing
 
 Now we can graph the relationship between smoking and diabetes as separated by smoking category.
 
@@ -90,7 +96,7 @@ smoking_diabetes_graph <- ggplot(smoking_diabetes_percentage,
             position = position_dodge(width = 1),
             vjust    = .4,        # nudge above bar
             size     = 3,
-            hjust    = -.1, size = 3) +
+            hjust    = -.1) +
             
  
   coord_flip() +
@@ -104,17 +110,19 @@ smoking_diabetes_graph <- ggplot(smoking_diabetes_percentage,
   ) 
 
 smoking_diabetes_graph
+
 ```
 
 
+# Heart disease and smoking
 
+The methods used to summarise the diabetes and smoking history data are repeated with the heart disease column.
 
 ```{r heart disease and smoking}
 smoking_heart_disease_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, heart_disease) %>%  
   summarise(total = n())
-smoking_heart_disease_data
 
 smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_disease_data, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people, digits = 4)) %>% select(smoking_history, heart_disease, total, Percentage)
 
@@ -123,7 +131,7 @@ smoking_heart_disease_percentage
 ```
 
 
-
+# Graphing relationship of Smoking History and Heart Disease
 
 ```{r Heart Disease and Smoking Graph}
 smoking_heart_disease_graph <- ggplot(smoking_heart_disease_percentage,
@@ -153,19 +161,22 @@ smoking_heart_disease_graph <- ggplot(smoking_heart_disease_percentage,
 smoking_heart_disease_graph
 ```
 
+# Smoking and Hypertension
+
+Once again, the same methods applied to diabetes and heart disease was applied to Hypertension.
+
 ```{r Smoking and hypertension}
 smoking_hypertension_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, hypertension) %>%  
   summarise(total = n())
-smoking_hypertension_data
 
 smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertension_data, by = 'smoking_history') %>% mutate(Percentage = round( total/total_people, digits = 4)) %>% select(smoking_history, hypertension, total, Percentage)
 
 smoking_hypertension_percentage
 ```
 
-
+#Graphing Smoking history and Hypertension
 
 
 ```{r Smoking and Hypertension Graph}
@@ -198,7 +209,17 @@ smoking_hypertension_graph
 ```
 
 
-# To attempt something cool;
+# Age as a factor
+
+When looking at the data, there is a spike in former smokers risk for the three health issues discussed.
+
+Questions arose; If you never quit smoking, do you maintain similar risk to people who never have smoked? What changes from current to former smokers?
+
+To have been classified a former smoker, you at one point had to have been a current smoker; which signifies a change in age from current to former smoking status.
+
+This lead to me graphing the density of smoking category by age.
+
+# Age and Smoking History Category
 
 ```{r Age by smoking category}
 
@@ -209,7 +230,15 @@ ggplot(smoking_data, aes(x = age, color = as.factor(smoking_history))) + geom_de
        
 ```
 
-```{r Age and diabetes}
+# The Age and Health Factors
+
+The data shows a increase in former smokers with a simultaneous decrease in current smokers around the 40-60 yr age range.
+
+We can compare this with the density of people with diabetes, hypertension, and heart disease across all ages to see if there are similar spikes.
+
+---
+
+```{r Age and health issues}
 
 age_vs_diabetes <- ggplot(diabetes_dataset, aes(x = age, color = as.factor(diabetes))) + geom_density()
 
@@ -217,5 +246,30 @@ age_vs_hypertension <- ggplot(diabetes_dataset, aes(x = age, color = as.factor(h
 
 age_vs_heart_disease <- ggplot(smoking_data, aes(x = age, fill = as.factor(heart_disease))) + geom_density(alpha = .5)
 
-age_vs_heart_disease
+age_vs_diabetes
 ```
+
+---
+
+```{r}
+age_vs_heart_disease
+
+```
+
+---
+
+```{r}
+age_vs_hypertension
+
+```
+
+# Findings
+
+Former smokers are at a higher risk for diabetes, hypertension, and heart disease
+
+As people get older, their risk for disease increases
+
+Although current smokers risk is not reflected through our percentage graph, further digging shows that around the age where current smokers decrease and former smokers increase is around the same age range that the risk for disease increases
+
+
+
