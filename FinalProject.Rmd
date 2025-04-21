@@ -434,7 +434,7 @@ ggplot(df_summary, aes(x = HbA1c_cat,
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 library(ggplot2)
 
 
@@ -462,7 +462,7 @@ ggplotly(male_diabetic_dens)
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 library(ggplot2)
 
 
