@@ -405,11 +405,11 @@ smoking_hypertension_percentage
 
 
 ```{r}
-# install.packages("ggplot2")  # if needed
+
 library(ggplot2)
 
-# Assuming your data.frame is named df
-df_male <- df %>% 
+
+df_male <- diabetes_dataset %>% 
   filter(gender == "Male") %>% 
   mutate(diabetes = factor(diabetes,
                            levels = c(0,1),
