@@ -401,7 +401,7 @@ library(scales)
 df_summary <- diabetes_dataset %>%
   mutate(
     HbA1c_cat = case_when(
-      HbA1c_level < 5.7                      ~ "< 5.7 (non‑diabetic)",
+      HbA1c_level < 5.7                      ~ "< 5.7 (non diabetic)",
       HbA1c_level >= 5.7 & HbA1c_level < 6.5 ~ "5.7–6.4 (prediabetic)",
       HbA1c_level >= 6.5                    ~ "≥ 6.5 (diabetic)"
     ),
@@ -434,8 +434,61 @@ ggplot(df_summary, aes(x = HbA1c_cat,
 ```
 
 
+```{r}
+library(ggplot2)
 
 
+df_male <- diabetes_dataset %>% 
+  filter(gender == "Male") %>% 
+  mutate(diabetes = factor(diabetes,
+                           levels = c(0,1),
+                           labels = c("Non‑diabetic","Diabetic")))
+
+male_diabetic_dens = ggplot(df_male, aes(x = age, fill = diabetes)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(
+    name   = "Diabetes status",
+    values = c("Non‑diabetic" = "lightpink", 
+               "Diabetic"     = "#301934")
+  ) +
+  labs(
+    title = "Age Distribution in Male Subjects",
+    x     = "Age",
+    y     = "Density"
+  ) +
+  theme_minimal()
+
+ggplotly(male_diabetic_dens)
+```
+
+
+```{r}
+library(ggplot2)
+
+
+df_female <- diabetes_dataset %>% 
+  filter(gender == "Female") %>% 
+  mutate(diabetes = factor(diabetes,
+                           levels = c(0,1),
+                           labels = c("Non‑diabetic","Diabetic")))
+
+ female_diabetic_dens = ggplot(df_female, aes(x = age, fill = diabetes)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(
+    name   = "Diabetes status",
+    values = c("Non‑diabetic" = "lightpink", 
+               "Diabetic"     = "#309")
+  ) +
+  labs(
+    title = "Age Distribution in Female Subjects",
+    x     = "Age",
+    y     = "Density"
+  ) +
+  theme_minimal()
+
+ ggplotly(female_diabetic_dens)
+
+```
 
 
 
