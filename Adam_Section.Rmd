@@ -9,21 +9,15 @@ knitr::opts_chunk$set(echo = FALSE)
 
 library(tidyverse)
 library(ggplot2)
+library(scales)
+library(plotly)
+
+library(readr)
+diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
 
 ```
 
-One of the more interesting bits of data is that there are individuals that have an a1c of over 6.5 yet are not considered diabetic.
-
-```{r hbA1C vs Blood Sugar}
-
-```
-
-<<<<<<< HEAD
-
-# Smokers go brrr# Smokers go brrrgeom_boxplot()
-=======
 ## Smokers go brrr
->>>>>>> 5bd874377fdd9698061e770432ce3749a2be6347
 
 In the smoking data there are 6 unique values
 
@@ -56,7 +50,11 @@ unique(diabetes_dataset$smoking_history)
 #Omit No info
 
 smoking_tally <- diabetes_dataset %>% filter(smoking_history != 'No Info') %>%  group_by(smoking_history) %>% summarise(total_people = n())
+```
 
+Further 
+
+```{r smoking and diabetes}
 #group diabetic vs non diabetic people together
 
 smoking_diabetes_dataset <- diabetes_dataset %>%
@@ -70,19 +68,17 @@ smoking_diabetes_dataset
 #mutate a column to create a percentage per category;
 #select desired columns
 
-smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_dataset, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, diabetes, total, Percentage)
+smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_dataset, by = 'smoking_history') %>% mutate(Percentage = total/total_people) %>% select(smoking_history, diabetes, total, Percentage)
 
 smoking_diabetes_percentage
 ```
 
 Now we can graph the relationship between smoking and diabetes as separated by smoking category.
 
-```{r Plot smoking}
+```{r Plot smoking and diabetes}
 
 #Create initial graph about smoking and diabetes
 
-<<<<<<< HEAD
-=======
 smoking_diabetes_graph <- ggplot(smoking_diabetes_percentage,
        aes(x    = smoking_history,
            y    = total,
@@ -110,7 +106,10 @@ smoking_diabetes_graph <- ggplot(smoking_diabetes_percentage,
 smoking_diabetes_graph
 ```
 
-```{r heart disease and smokingggg}
+
+
+
+```{r heart disease and smoking}
 smoking_heart_disease_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, heart_disease) %>%  
@@ -123,8 +122,11 @@ smoking_heart_disease_percentage
 
 ```
 
-```{r}
-ggplot(smoking_heart_disease_percentage,
+
+
+
+```{r Heart Disease and Smoking Graph}
+smoking_heart_disease_graph <- ggplot(smoking_heart_disease_percentage,
        aes(x    = smoking_history,
            y    = total,
            fill = factor(heart_disease))) +
@@ -135,7 +137,7 @@ ggplot(smoking_heart_disease_percentage,
             position = position_dodge(width = 1),
             vjust    = .4,        # nudge above bar
             size     = 3,
-            hjust    = -.1, size = 3) +
+            hjust    = -.1) +
             
  
   coord_flip() +
@@ -148,6 +150,7 @@ ggplot(smoking_heart_disease_percentage,
     caption = "1 = Heart Disease, 0 = No Heart Disease"
   ) 
 
+smoking_heart_disease_graph
 ```
 
 ```{r Smoking and hypertension}
@@ -162,8 +165,11 @@ smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertensio
 smoking_hypertension_percentage
 ```
 
-```{r Hypertension Graph}
-ggplot(smoking_hypertension_percentage,
+
+
+
+```{r Smoking and Hypertension Graph}
+smoking_hypertension_graph <- ggplot(smoking_hypertension_percentage,
        aes(x    = smoking_history,
            y    = total,
            fill = factor(hypertension))) +
@@ -174,7 +180,7 @@ ggplot(smoking_hypertension_percentage,
             position = position_dodge(width = 1),
             vjust    = .4,        # nudge above bar
             size     = 3,
-            hjust    = -.1, size = 3) +
+            hjust    = -.1) +
             
  
   coord_flip() +
@@ -187,128 +193,29 @@ ggplot(smoking_hypertension_percentage,
     caption = "1 = Hypertension, 0 = No Hypertension"
   ) 
 
-```
-
-```{r}
-library(scales)
-
-# 2) Plot with geom_col + geom_text
-ggplot(smoking_diabetes_percentage,
-       aes(x    = smoking_history,
-           y    = total,
-           fill = factor(diabetes))) +
-  geom_col(position = position_dodge(width = 0.9)) +
- 
-  # add percent labels
-  geom_text(aes(label = percent(Percentage, accuracy = .1)),
-            position = position_dodge(width = 1),
-            vjust    = .4,        # nudge above bar
-            size     = 3,
-            hjust    = -.1, size = 3) +
-            
- 
-  coord_flip() +
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  labs(
-    title   = "Smoking History and Diabetes Relationship",
-    x       = "Smoking History",
-    y       = "Count of People",
-    fill    = "Has Diabetes",
-    caption = "1 = diabetes, 0 = no diabetes"
-  ) 
-
+smoking_hypertension_graph
 
 ```
 
-Now we can graph the relationship between smoking and diabetes as separated by smoking category.
 
-```{r Plotting smoking brrrr}
-library(ggplot2)
-library(plotly)
+# To attempt something cool;
 
-#Create initial graph about smoking and diabetes
+```{r Age by smoking category}
 
->>>>>>> 5bd874377fdd9698061e770432ce3749a2be6347
-smoking_diabetes_graph <- ggplot(smoking_diabetes_percentage) + 
-  geom_col(aes(x = smoking_history, y = total, fill = as.factor(diabetes)), position = 'dodge') 
+smoking_data <- diabetes_dataset %>% filter(smoking_history != "No Info")
 
-smoking_diabetes_graph <- smoking_diabetes_graph + coord_flip() + labs(
-  title = 'Smoking History and Diabetes Relationship',
-  y = 'People',
-  x = 'Smoking History',
-  fill = 'Has Diabetes',
-  caption = "1 indicates diabetes, 0 indicates no diabetes"
-  ) 
-
-smoking_diabetes_graph
+ggplot(smoking_data, aes(x = age, color = as.factor(smoking_history))) + geom_density()
+       
+       
 ```
 
-```{r Smoking on that percentage pack tonight tonight}
+```{r Age and diabetes}
 
-ggplot(smoking_diabetes_percentage) + geom_col(aes(x = smoking_history, y = Percentage, fill = as.factor(diabetes)))
+age_vs_diabetes <- ggplot(diabetes_dataset, aes(x = age, color = as.factor(diabetes))) + geom_density()
 
-ggplot(smoking_diabetes_per, aes(x = smoking_history, y = Percentage, fill = diabetes)) +
-  geom_col(position = "stack") +
-  geom_text(aes(label = paste0(round(Percentage, 1), "%")), 
-            position = position_stack(vjust = 0.5), size = 4) +  # Centers text inside bars
-  labs(title = "Smoking History and Diabetes Status",
-       x = "Smoking History",
-       y = "Percentage (%)",
-       fill = "Diabetes Status") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+age_vs_hypertension <- ggplot(diabetes_dataset, aes(x = age, color = as.factor(hypertension))) + geom_density()
 
+age_vs_heart_disease <- ggplot(smoking_data, aes(x = age, fill = as.factor(heart_disease))) + geom_density(alpha = .5)
 
+age_vs_heart_disease
 ```
-
-<<<<<<< HEAD
-```{r}
-library(ggplot2)
-
-smoking_diabetes_per <- smoking_diabetes_percentage %>% select(smoking_history,diabetes,total) %>% mutate(diabetes = factor(diabetes, levels = c(0, 1), labels = c("No Diabetes", "Diabetes"))) %>% 
-ggplot(smoking_diabetes_percentage) + geom_col(aes(x = smoking_history, y = Percentage, fill = as.factor(diabetes)))
-```
-
-
-
-=======
->>>>>>> 5bd874377fdd9698061e770432ce3749a2be6347
-```{r heart disease and smoking}
-smoking_heart_disease_data <- diabetes_dataset %>%
-  filter(smoking_history != 'No Info') %>%  
-  group_by(smoking_history, heart_disease) %>%  
-  summarise(total = n())
-smoking_heart_disease_data
-
-smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_disease_data, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, heart_disease, total, Percentage)
-
-smoking_heart_disease_percentage
-
-```
-
-```{r}
-
-
-```
-
-```{r Smoking and hypertensionnn}
-smoking_hypertension_data <- diabetes_dataset %>%
-  filter(smoking_history != 'No Info') %>%  
-  group_by(smoking_history, hypertension) %>%  
-  summarise(total = n())
-smoking_hypertension_data
-
-smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertension_data, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, hypertension, total, Percentage)
-
-smoking_hypertension_percentage
-```
-
-```{r}
-diabetes_dataset %>% filter(HbA1c_level >= 6.5) %>% group_by(diabetes) %>% summarise(n())
-
-```
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 5bd874377fdd9698061e770432ce3749a2be6347
