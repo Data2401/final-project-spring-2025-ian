@@ -556,7 +556,7 @@ The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help
 
 
 
-```{r Cleaning smoking data, echo=FALSE}
+```{r Cleaning smoking data, echo=FALSE, message=FALSE, warning=FALSE}
 
 # Figure out the unique categories of smoking history
 #unique(diabetes_dataset$smoking_history)
@@ -573,7 +573,7 @@ The data was then summarized to gather the total counts belonging to each smokin
 
 A percentage per smoking category with diabetes is then calculated dividing the count with diabetes by the total count in each smoking category.
 
-```{r smoking and diabetes, echo=FALSE}
+```{r smoking and diabetes, echo=FALSE, message=FALSE, warning=FALSE}
 #group diabetic vs non diabetic people together
 
 smoking_diabetes_dataset <- diabetes_dataset %>%
@@ -592,7 +592,7 @@ smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_datase
 
 Now we can graph the relationship between smoking and diabetes as separated by smoking category.
 
-```{r Plot smoking and diabetes, echo=FALSE}
+```{r Plot smoking and diabetes, echo=FALSE, message=FALSE,warning=FALSE}
 
 #Create initial graph about smoking and diabetes
 
@@ -628,11 +628,7 @@ smoking_diabetes_graph
 ```
 
 
-# Heart disease and smoking
-
-The methods used to summarise the diabetes and smoking history data are repeated with the heart disease column.
-
-```{r heart disease and smoking, echo=FALSE}
+```{r heart disease and smoking, echo=FALSE, warning=FALSE, message=FALSE}
 smoking_heart_disease_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, heart_disease) %>%  
@@ -642,10 +638,8 @@ smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_dise
 
 ```
 
-
 # Graphing relationship of Smoking History and Heart Disease
-
-```{r Heart Disease and Smoking Graph, echo=FALSE}
+```{r Heart Disease and Smoking Graph, echo=FALSE, warning=FALSE}
 smoking_heart_disease_graph <- ggplot(smoking_heart_disease_percentage,
        aes(x    = smoking_history,
            y    = total,
@@ -676,11 +670,8 @@ smoking_heart_disease_graph <- ggplot(smoking_heart_disease_percentage,
 smoking_heart_disease_graph
 ```
 
-# Smoking and Hypertension
 
-Once again, the same methods applied to diabetes and heart disease was applied to Hypertension.
-
-```{r Smoking and hypertension, echo=FALSE}
+```{r Smoking and hypertension, echo=FALSE, message=FALSE, warning=FALSE}
 smoking_hypertension_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, hypertension) %>%  
@@ -693,7 +684,7 @@ smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertensio
 # Smoking and Hypertension
 
 
-```{r Smoking and Hypertension Graph, echo=FALSE}
+```{r Smoking and Hypertension Graph, echo=FALSE, warning=FALSE}
 smoking_hypertension_graph <- ggplot(smoking_hypertension_percentage,
        aes(x    = smoking_history,
            y    = total,
@@ -737,7 +728,7 @@ This lead to me graphing the density of smoking category by age.
 
 # Age and Smoking History Category
 
-```{r Age by smoking category, echo=FALSE}
+```{r Age by smoking category, echo=FALSE, message=FALSE, warning=FALSE}
 
 smoking_data <- diabetes_dataset %>% filter(smoking_history != "No Info")
 
@@ -762,7 +753,7 @@ We can compare this with the density of people with diabetes, hypertension, and 
 
 
 
-```{r Age and health issues, echo=FALSE}
+```{r Age and health issues, echo=FALSE, message=FALSE, warning=FALSE}
 #AGE VS DIABETES
 age_vs_diabetes <- ggplot(diabetes_dataset, 
                           aes(x = age, fill = as.factor(diabetes))
@@ -826,14 +817,14 @@ age_vs_heart_disease <- ggplot(smoking_data,
 
 ---
 
-```{r Age vs diabetes, echo=FALSE}
+```{r Age vs diabetes, echo=FALSE, message=FALSE, warning=FALSE}
 age_vs_diabetes
 
 ```
 
 ---
 
-```{r age vs heart disease, echo=FALSE}
+```{r age vs heart disease, echo=FALSE, message=FALSE, warning=FALSE}
 age_vs_heart_disease
 
 ```
@@ -843,7 +834,7 @@ age_vs_heart_disease
 
 ---
 
-```{r age vs hypertension, echo=FALSE}
+```{r age vs hypertension, echo=FALSE, message=FALSE, warning=FALSE}
 age_vs_hypertension
 
 ```
@@ -856,7 +847,7 @@ As people get older, their risk for disease increases
 
 Although current smokers risk is not reflected through our percentage graph, further digging shows that around the age where current smokers decrease and former smokers increase is around the same age range that the risk for disease increases
 
-
+---
 
 ### Conclusion
 
