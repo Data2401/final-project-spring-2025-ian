@@ -155,19 +155,8 @@ ggplotly(interactive_DHH)
 ### BMI Distribution by Hypertension Status Plot
 
 
-Shows the distribution of BMI values based on hypertension status. A violin plot is great for visualizing the distribution and density of BMI across hypertension categories,
-
-Shape and width: The width of each "violin" represents the density of BMI values at different levels. Wider sections mean more individuals have that BMI, while narrower sections indicate fewer people at those values.
-
-Comparison of distributions: The blue violin represents people without hypertension (hypertension = 0), while the red violin represents those with hypertension (hypertension = 1). By comparing them, you can see how BMI differs between these groups.
-
-The horizontal line around 25 BMI: This marks the median BMI for each group. Since both violins have a horizontal line in roughly the same position, it suggests that the median BMI is around 25 for both hypertensive and non-hypertensive individuals.
-
-Density trends: If the violins have different thicknesses in certain BMI ranges, it tells you which BMI values are more or less common in each group. People with hypertension seem to have a higher BMI overall, but both groups share a similar median.
-
-The distribution shape is different—for example, if one violin is wider at higher BMI values, it suggests that hypertension is more common among individuals with higher BMI.
-
-Outliers or extreme values might appear as small bulges or extended tails at the ends of the violins, showing individuals with very high or low BMI.
+The graph below is separated by whether or not a person has hypertension. With the comparison of BMI as the range, it's seen that majority of people with and without hypertension lie within a BMI range of 25-29. Notice that for people with hypertension, the desnity population above the red line is greater than that of people without hypertension; indicating that there's a larger of population of people with hypertension that have a larger BMI  
+Outliers or extreme values might appear as small bulges or extended tails at the ends of the chart, showing individuals with very high or low BMI.
 
 ```{r, echo=FALSE,fig.width=7, fig.height=6, fig.align="center"}
 library(dplyr)
@@ -199,8 +188,6 @@ BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = b
 # make our plot interactive with ggplotly
 ggplotly(BMI_distribution)
 ```
-
-The graph below is separated by whether or not a person has hypertension. With the comparison of BMI as the range, it's seen that majority of people with and without hypertension lie within a BMI range of 25-29. Notice that for people with hypertension, the desnity population above the red line is greater than that of people without hypertension; indicating that there's a larger of population of people with hypertension that have a larger BMI  
 
 ---
 
@@ -529,8 +516,17 @@ df_female <- diabetes_dataset %>%
 
 ---
 
+### Conclusion
 
+Within this analysis we've scaled:
+- Diabetes status based by age and sex
+- Relations towards BMI and Hypertension status
+- Shared populations between Diabetes, heart disease, and hypertension status
+- HbA1c trends amongst sexes
+- Glucose levels dependent by diabetes status
+- Smoking status and its relation to Diabetes, heart disease, and hypertension
 
+From this we were able to to effectively show and defend our general assumptions about diabetes and its cofactors
 
 
 
