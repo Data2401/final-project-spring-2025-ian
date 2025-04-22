@@ -227,9 +227,14 @@ This lead to me graphing the density of smoking category by age.
 
 smoking_data <- diabetes_dataset %>% filter(smoking_history != "No Info")
 
-ggplot(smoking_data, aes(x = age, color = as.factor(smoking_history))) + geom_density()
+smoking_age_density <- ggplot(smoking_data, aes(x = age, color = as.factor(smoking_history))) + geom_density() +
+  labs(
+    title = "Smoking History Across Ages",
+    x = "Age",
+    color = "Smoking History"
+  )
        
-       
+smoking_age_density       
 ```
 
 # The Age and Health Factors
@@ -242,15 +247,48 @@ We can compare this with the density of people with diabetes, hypertension, and 
 
 ```{r Age and health issues}
 
-age_vs_diabetes <- ggplot(diabetes_dataset, aes(x = age, color = as.factor(diabetes))) + geom_density()
+age_vs_diabetes <- ggplot(diabetes_dataset, 
+                          aes(x = age, fill = as.factor(diabetes))
+                          ) +
+  geom_density(alpha = .5) +  
+  labs(
+    title   = "Age and Diabetes",
+    x       = "Age",
+    fill    = "Diabetes",
+    caption = "1 = Diabetes, 0 = No Diabetes"
+  ) 
 
-age_vs_hypertension <- ggplot(diabetes_dataset, aes(x = age, color = as.factor(hypertension))) + geom_density()
+age_vs_hypertension <- ggplot(diabetes_dataset,
+                              aes(x = age, fill = as.factor(hypertension))
+                              ) + 
+  geom_density(alpha = .5) + 
+  labs(
+    title   = "Age and Hypertension",
+    x       = "Age",
+    fill    = "Hypertension",
+    caption = "1 = Hypertension, 0 = No Hypertension"
+  ) 
+  
 
-age_vs_heart_disease <- ggplot(smoking_data, aes(x = age, fill = as.factor(heart_disease))) + geom_density(alpha = .5)
+age_vs_heart_disease <- ggplot(smoking_data, 
+                               aes(x = age, fill = as.factor(heart_disease))) + 
+  geom_density(alpha = .5) +
+  labs(
+    title   = "Age and Heart Disease",
+    x       = "Age",
+    fill    = "Heart Disease",
+    caption = "1 = Heart Disease, 0 = No Heart Disease"
+  ) 
 
-age_vs_diabetes
+
 ```
 
+
+
+```{r Age vs diabetes}
+age_vs_diabetes
+
+```
 
 
 ```{r age vs heart disease}
