@@ -534,6 +534,10 @@ This data does not indicate whether our diabetic patients are type 1 or type 2 d
 
 This data is generated from various studies, making up the 100,000 patients
 
+Blood glucose levels were not detailed on how this data was retrieved
+
+
+
 
 
 
