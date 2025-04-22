@@ -522,11 +522,17 @@ Within this analysis we've scaled:
 - Diabetes status based by age and sex
 - Relations towards BMI and Hypertension status
 - Shared populations between Diabetes, heart disease, and hypertension status
-- HbA1c trends amongst sexes
+- HbA1c trends among sexes
 - Glucose levels dependent by diabetes status
 - Smoking status and its relation to Diabetes, heart disease, and hypertension
 
-From this we were able to to effectively show and defend our general assumptions about diabetes and its cofactors
+From this we were able to to effectively show and defend our general assumptions about diabetes and its co factors
+
+Limitations: 
+
+This data does not indicate whether our diabetic patients are type 1 or type 2 diabetic
+
+This data is generated from various studies, making up the 100,000 patients
 
 
 
