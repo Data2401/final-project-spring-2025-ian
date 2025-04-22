@@ -193,6 +193,13 @@ ggplotly(BMI_distribution)
 
 ### Blood Glucose Levels by Diabetes Status (age 3-80) Plot
 
+- Comparing blood glucose levels by diabetes status only for individuals from ages 3-80. We selected this age range because here we have the youngest and oldest people with diabetes.
+
+- For individuals with no diabetes, a blood sugar level can range from 120–140 mg/dL after 2-3 hours of eating.
+
+- For individuals with diabetes, a blood sugar level can range from 200+ mg/dL after 2-3 hours of eating. 
+
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=7, fig.height=6}
 library(dplyr)
 library(ggplot2)
@@ -221,7 +228,7 @@ diabetes_and_no_diabetes_plot <- diabetes_dataset %>%
   labs(fill = "Status") +
   scale_y_continuous(breaks = seq(80, 300, by = 20)) +
   geom_hline(yintercept = c(120, 140), linetype = "solid", color = "#0033FF", size = 0.2) +
-  geom_hline(yintercept = c(180, 250), linetype = "solid", color = "#CC3300", size = 0.3) +  # Mark High Range
+  geom_hline(yintercept = c(200), linetype = "solid", color = "#CC3300", size = 0.3) +  # Mark High Range
   theme_void() +
   theme(plot.title = element_text(hjust = 0.5))+
   theme(
