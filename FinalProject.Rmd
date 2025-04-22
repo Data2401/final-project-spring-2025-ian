@@ -470,12 +470,7 @@ ggplot(df_summary, aes(x = HbA1c_cat,
 
 ```
 
-<<<<<<< HEAD
----
 
-=======
-The plot below shows the population density of men based on diabetes status, scaled by age range
->>>>>>> 3269be02134749ea203553e47da303a47edbc66e
 ```{r, echo=FALSE}
 library(ggplot2)
 
@@ -503,11 +498,7 @@ male_diabetic_dens = ggplot(df_male, aes(x = age, fill = diabetes)) +
 ggplotly(male_diabetic_dens)
 ```
 
-<<<<<<< HEAD
----
-=======
-The plot below shows the population density of women based on diabetes status, scaled by age range
->>>>>>> 3269be02134749ea203553e47da303a47edbc66e
+
 
 ```{r, echo=FALSE}
 library(ggplot2)
