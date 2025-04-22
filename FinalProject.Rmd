@@ -1,9 +1,12 @@
 ---
 title: "Final Project"
 author: "Adam Guenoun, Indira Martinez, Nicholas Solis"
-date: "`r Sys.Date()`"
-output: html_document
+output:
+  slidy_presentation:
+    highlight: kate
+  powerpoint_presentation: default
 ---
+
 ### Introduction:
 
   Within this analysis, we'll investigate factors correlated to diabetes. With a data set of 100,000 people, this investigation allows us to display relations between ages, HbA1c levels, smoking history, and glucose levels. With a wide range of data points, we begin to question if there are trends within this data that match our general understanding of diabetes. Our goal is to asses which of the 9 variables play a stronger role to the development of diabetes and if we can prove trends to better support our assumptions of this data. Through data visualization, chart analysis, and numerical analysis we will be able to present this data to convicne a general audience of the important factors that contribute to diabteic trends. 
@@ -24,7 +27,7 @@ diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
 #View(diabetes_dataset)
 ```
 
-### Diabetes Dataset
+## Diabetes Dataset
 
 ```{r, echo=FALSE,fig.width=4, fig.height=4 }
 library(knitr)
@@ -32,24 +35,24 @@ library(knitr)
 kable(head(diabetes_dataset, 6), caption = "100,000 × 9 (first 6 rows)")
 ```
 
+---
 
+### Male vs. Female Blood Sugar Levels (HbA1c) Plot
 
-### Male vs. Female Blood Sugar Levels (HbA1c)
 
 Similar Prevalence of Prediabetes – The proportion of individuals categorized as having prediabetes (HbA1c 5.7% - 6.4%) is almost identical between males (41.3%) and females (41.4%). This suggests that prediabetes affects both genders at nearly the same rate.
 
 -   Slightly Higher Diabetes Rates Among Males – More males (21.6%) fall into the diabetes (HbA1c ≥ 6.5%) category compared to females (20.2%). While the difference is small, it might indicate that men have a slightly higher risk of diabetes in this dataset.
 
-**Females Have a Slightly Higher Proportion** of Normal Blood Sugar Levels – More females (38.4%) fall into the normal blood sugar category (\<5.7%) compared to males (37.1%). This may indicate some slight protective factors or lifestyle differences in this group.
+Females Have a Slightly Higher Proportion of Normal Blood Sugar Levels – More females (38.4%) fall into the normal blood sugar category (\<5.7%) compared to males (37.1%). This may indicate some slight protective factors or lifestyle differences in this group.
 
 Since more males are in the diabetes category, there could be gender-related risk factors worth exploring—such as diet, activity levels, or genetic predisposition.
 
 Overall, blood sugar regulation patterns appear fairly balanced between genders, but small differences suggest potential areas for further investigation.
 
-::: callout-note
-**Similar Prevalence of Prediabetes**\
+Similar Prevalence of Prediabetes
 The proportion of individuals classified as having prediabetes (HbA1c 5.7% - 6.4%) is nearly identical between males (**41.3%**) and females (**41.4%**). This suggests no significant disparity.
-:::
+
 
 ```{r, echo=FALSE, fig.width=8, fig.height=6, fig.align="center"}
 library(dplyr)
@@ -78,9 +81,7 @@ get_perc_count <- mut_diabdat_for_BSL %>%
   group_by(gender) %>%   # group by gender
   mutate(percent = n / sum(n) * 100) # get percentage of population within each diabetic category
 
-kable(head(get_perc_count, 5), caption = "6 x 4 (first 5 rows)")
 # create my barplot, add x and y labels as well as color and text details. 
-
 get_perc_count_plotly <- ggplot(get_perc_count, aes(x = gender, y = n, fill = HbA1c_category)) +
   geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.1, alpha = 0.5) + 
   geom_text(aes(label = paste0(n, " (", round(percent, 1), "%)")),
@@ -100,10 +101,14 @@ get_perc_count_plotly <- ggplot(get_perc_count, aes(x = gender, y = n, fill = Hb
 # here I make the bar plot interactive using ggplotly
 
 ggplotly(get_perc_count_plotly)
+
+kable(head(get_perc_count, 5), caption = "6 x 4 (first 5 rows)")
 ```
 
+---
 
-### Age Distribution in Diabetes, Heart Disease, and Hypertension
+### Age Distribution in Diabetes, Heart Disease, and Hypertension Plot
+
 
 ```{r,echo=FALSE,fig.width=9, fig.height=5}
 library(dplyr)
@@ -150,7 +155,10 @@ interactive_DHH <- ggplot() +
 ggplotly(interactive_DHH)
 ```
 
+---
+
 ### BMI Distribution by Hypertension Status Plot
+
 
 Shows the distribution of BMI values based on hypertension status. A violin plot is great for visualizing the distribution and density of BMI across hypertension categories,
 
@@ -172,11 +180,12 @@ library(ggplot2)
 library(plotly)
 library(knitr) 
 
-kable(head(diabetes_dataset, 5), caption = "10,000 x 9 (first 5 rows)")
+kable(head(diabetes_dataset, 5), caption = "10,000 x 9 (first 5 rows)") # display the diabetes_dataset table
 
-overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE)
+overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE) # new variable for the median of bmi to obtain horizontal red line
 
-BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = bmi, fill = factor(hypertension))) +
+#create a violin plot, hypertension is selected as our x variable and bmi as our y variable
+BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = bmi, fill = factor(hypertension))) + # use factor so that hypertension can be treated as a factor
   geom_violin(alpha = 0.6) +
   geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", linewidth = 0.3) +
   scale_fill_manual(values = c("azure3", "#CC6600")) +
@@ -192,11 +201,15 @@ BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = b
     axis.text = element_text(size = 11),
   )
 
+# make our plot interactive with ggplotly
 ggplotly(BMI_distribution)
 ```
 
 The graph below is separated by whether or not a person has hypertension. With the comparison of BMI as the range, it's seen that majority of people with and without hypertension lie within a BMI range of 25-29. Notice that for people with hypertension, the desnity population above the red line is greater than that of people without hypertension; indicating that there's a larger of population of people with hypertension that have a larger BMI  
 
+---
+
+### Blood Glucose Levels by Diabetes Status (age 3-80) Plot
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=7, fig.height=6}
 library(dplyr)
@@ -204,7 +217,16 @@ library(ggplot2)
 library(plotly)
 library(knitr) 
 
-BGL_status_diabetes_dataset <- diabetes_dataset %>%
+# these are the variables I worked with to create this table
+table_diabetes_no_diabetes <- diabetes_dataset %>%
+  select(age,diabetes, blood_glucose_level) %>%
+  filter(age >= 3) %>% 
+  mutate(diabetes = factor(diabetes, levels = c(0, 1), labels = c("No Diabetes", "Diabetes")))
+
+# here I show the table
+kable(head(table_diabetes_no_diabetes, 5), caption = "96,713 x 3 (first 5 rows)")
+
+diabetes_and_no_diabetes_plot <- diabetes_dataset %>%
   select(blood_glucose_level,diabetes, age) %>%
   filter(age >= 3) %>% 
   mutate(diabetes = factor(diabetes, levels = c(0, 1), labels = c("No Diabetes", "Diabetes"))) %>% 
@@ -225,43 +247,57 @@ BGL_status_diabetes_dataset <- diabetes_dataset %>%
     axis.text = element_text(size = 11),
   )
 
-ggplotly(BGL_status_diabetes_dataset)
+# make our plot interactive with ggplotly
+ggplotly(diabetes_and_no_diabetes_plot)
 ```
 
-## BMI vs. Age Across Diabetes & Heart Disease Plot
+---
+
+### BMI vs. Age Across Diabetes & Heart Disease Plot
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
 library(dplyr)
 library(ggplot2)
 library(knitr) 
 
-diabetes_dataset_filtered_bmi <- diabetes_dataset %>%
-  mutate(bmi_filtered = ifelse(bmi >= 2, bmi, NA))
+#diabetes_dataset
 
-diabetes_only <- diabetes_dataset_filtered_bmi %>%
-  select(age, bmi_filtered, diabetes) %>%
+# here I create 2 variables that represent the data frames I'll be working on 
+diabetes_only <- diabetes_dataset %>%
+  select(age, bmi, diabetes) %>%
   filter(age >= 2, diabetes == 1) %>%
   mutate(condition = "Diabetes Only")
 
-heart_disease_only <- diabetes_dataset_filtered_bmi %>%
-  select(age, bmi_filtered, heart_disease) %>%
+# here is a display the diabetes_only data frame
+kable(head(diabetes_only, 5), caption = "8,500 x 4 (first 5 rows)")
+
+heart_disease_only <- diabetes_dataset %>%
+  select(age, bmi, heart_disease) %>%
   filter(age >= 2, heart_disease == 1) %>%
   mutate(condition = "Heart Disease Only")
 
-combined_data <- bind_rows(diabetes_only, heart_disease_only)
+# here is a display the heart_disease_only data frame
+kable(head(heart_disease_only, 5), caption = "3,942 x 4 (first 5 rows)")
 
-common_bmi <- diabetes_dataset_filtered_bmi %>%
-  filter(bmi_filtered >= 25.01 & bmi_filtered <= 30.01) %>%
-  count(bmi_filtered) %>%
-  arrange(desc(n))  # Sort by highest count
+# next, I combine the 2 data frames to create a scatter plot
+combined_dataaa <- bind_rows(diabetes_only, heart_disease_only)
 
-most_common_bmi <- common_bmi$bmi_filtered[1]  # Extract the most frequent BMI
+# here I want to show that there is a common BMI between individuals with diabetes only and individuals with heart disease only, I will show this by drawing a red horizontal line across the plot
+common_bmi <- combined_dataaa %>%
+  count(bmi) %>% # count bmi
+  arrange(desc(n))  # sort by highest count
 
-ggplot(combined_data) +
-  geom_point(aes(x = age, y = bmi_filtered, color = condition), alpha = 0.3) +  # Scatter plot with BMI
-  geom_jitter(aes(x = age, y = bmi_filtered, color = condition), width = 0.1, height = 0.1, alpha = 0.3) +
-  geom_hline(yintercept = most_common_bmi, linetype = "solid", color = "red", size = 0.3) +  # Horizontal line marking common BMI
-  scale_color_manual(values = c("Diabetes Only" = "cornflowerblue", "Heart Disease Only" = "darkorchid4")) + 
+most_common_bmi <- common_bmi$bmi[1] # extract the most frequent bmi to mark a red horizontal line
+
+ggplot(combined_dataaa) +
+  geom_point(aes(x = age, y = bmi, color = condition), alpha = 0.3) +  # Scatter plot with BMI
+  geom_jitter(aes(x = age, y = bmi, color = condition), width = 0.1, height = 0.1, alpha = 0.3) +
+ geom_hline(aes(yintercept = 27.32, color = "Common BMI = 27.32"), linetype = "solid", size = 0.3)  +  # horizontal line marking common BMI
+  scale_color_manual(
+    values = c("Diabetes Only" = "cornflowerblue", 
+               "Heart Disease Only" = "darkorchid4", 
+               "Common BMI = 27.32" = "red"),
+    labels = c("Common BMI = 27.32", "Diabetes Only", "Heart Disease Only")) +
   scale_x_continuous(breaks = seq(0, 80, by = 5)) + 
   scale_y_continuous(breaks = seq(10.01, 95.69, by = 10)) +
   labs(title = "BMI vs. Age Across Diabetes & Heart Disease",
@@ -278,8 +314,7 @@ ggplot(combined_data) +
 
 ```
 
-
-
+---
 
 ### A relation to BMI and Heart Disease
 Each person within this scale has heart disease. Here a comparison is made between declared underweight and overweight people, grouped by sex, based on a BMI scale. There's a significant increase in population percentage for those who are considered overweight and that have heart disease. With visual aid, it can be concluded that as weight increases, chances of heart disease will increase.
@@ -336,6 +371,7 @@ ggplot(bmi_heart_gender,
 
 ```
 
+---
 
 ### An excpetion?
 
@@ -392,6 +428,7 @@ ggplot(summary_df, aes(x = sex, y = count, fill = sex)) +
 
 ```
 
+---
 
 ```{r, echo=FALSE}
 library(dplyr)
@@ -401,7 +438,7 @@ library(scales)
 df_summary <- diabetes_dataset %>%
   mutate(
     HbA1c_cat = case_when(
-      HbA1c_level < 5.7                      ~ "< 5.7 (non‑diabetic)",
+      HbA1c_level < 5.7                      ~ "< 5.7 (non diabetic)",
       HbA1c_level >= 5.7 & HbA1c_level < 6.5 ~ "5.7–6.4 (prediabetic)",
       HbA1c_level >= 6.5                    ~ "≥ 6.5 (diabetic)"
     ),
@@ -433,12 +470,66 @@ ggplot(df_summary, aes(x = HbA1c_cat,
 
 ```
 
+___
+
+```{r, echo=FALSE}
+library(ggplot2)
 
 
+df_male <- diabetes_dataset %>% 
+  filter(gender == "Male") %>% 
+  mutate(diabetes = factor(diabetes,
+                           levels = c(0,1),
+                           labels = c("Non‑diabetic","Diabetic")))
+
+male_diabetic_dens = ggplot(df_male, aes(x = age, fill = diabetes)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(
+    name   = "Diabetes status",
+    values = c("Non‑diabetic" = "lightpink", 
+               "Diabetic"     = "#301934")
+  ) +
+  labs(
+    title = "Age Distribution in Male Subjects",
+    x     = "Age",
+    y     = "Density"
+  ) +
+  theme_minimal()
+
+ggplotly(male_diabetic_dens)
+```
+
+___
+
+```{r, echo=FALSE}
+library(ggplot2)
 
 
+df_female <- diabetes_dataset %>% 
+  filter(gender == "Female") %>% 
+  mutate(diabetes = factor(diabetes,
+                           levels = c(0,1),
+                           labels = c("Non‑diabetic","Diabetic")))
 
+ female_diabetic_dens = ggplot(df_female, aes(x = age, fill = diabetes)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(
+    name   = "Diabetes status",
+    values = c("Non‑diabetic" = "lightpink", 
+               "Diabetic"     = "#309")
+  ) +
+  labs(
+    title = "Age Distribution in Female Subjects",
+    x     = "Age",
+    y     = "Density"
+  ) +
+  theme_minimal()
 
+ ggplotly(female_diabetic_dens)
+
+```
+
+---
 
 # Smokers go brrr# Smokers go brrrgeom_boxplot()
 
@@ -519,3 +610,32 @@ smoking_diabetes_graph
 
 ggplot(smoking_diabetes_percentage) + geom_col(aes(x = smoking_history, y = Percentage, fill = as.factor(diabetes)))
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
