@@ -103,6 +103,11 @@ kable(head(get_perc_count, 5), caption = "6 x 4 (first 5 rows)")
 
 ### Age Distribution in Diabetes, Heart Disease, and Hypertension Plot
 
+- Our density plot supports the correlation between aging and disease prevalence between two different groups, the first group are individuals with all three conditions and the second group are individuals who are free from all three these conditions. 
+
+- Older individuals (50+) are much more likely to have diabetes, heart disease, and hypertension.
+
+- Younger individuals (under 50) are more likely to be free of these conditions.
 
 
 ```{r,echo=FALSE,fig.width=9, fig.height=5}
