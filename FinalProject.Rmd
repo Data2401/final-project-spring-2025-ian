@@ -379,14 +379,12 @@ The data here is heavily dependent on BMI scale. It is important to note that BM
 
 
 ```{r, echo=FALSE}
-# load needed packages
 library(dplyr)
 library(ggplot2)
 
  male_data = diabetes_dataset %>% filter(gender == "Male")
  female_data = diabetes_dataset %>% filter(gender == "Female")
-# 1. Summarise men
- 
+# Summarise men
 men_summary <- male_data %>%
   summarise(
     count = sum(bmi >= 30 & diabetes == 0),
@@ -396,8 +394,7 @@ men_summary <- male_data %>%
     sex        = "Men",
     percent    = count / total * 100
   )
-
-# 2. Summarise women
+# Summarise women
 women_summary <- female_data %>%
   summarise(
     count = sum(bmi >= 30 & diabetes == 0),
@@ -407,12 +404,10 @@ women_summary <- female_data %>%
     sex        = "Women",
     percent    = count / total * 100
   )
-
-# 3. Combine into one data frame
-summary_df <- bind_rows(men_summary, women_summary)
-
-# 4. Plot
-ggplot(summary_df, aes(x = sex, y = count, fill = sex)) +
+# Combine into one data frame
+men_women_df = bind_rows(men_summary, women_summary)
+#plot
+ggplot(men_women_df, aes(x = sex, y = count, fill = sex)) +
   geom_col(width = 0.6) +
   geom_text(aes(label = sprintf("%d (%.1f%%)", count, percent)),
             vjust = -0.5, size = 4) +
@@ -425,16 +420,17 @@ ggplot(summary_df, aes(x = sex, y = count, fill = sex)) +
   ) +
   theme_minimal(base_size = 14) +
   theme(legend.position = "none")
-
 ```
 
 ---
+### A relation to hypertension?
 
+This depicts the different categories of HbA1c levels and their relation to patients hypertension status
 ```{r, echo=FALSE}
 library(dplyr)
 library(ggplot2)
 library(scales)
-
+#creating variables and assigning to dataset
 df_summary <- diabetes_dataset %>%
   mutate(
     HbA1c_cat = case_when(
@@ -442,16 +438,13 @@ df_summary <- diabetes_dataset %>%
       HbA1c_level >= 5.7 & HbA1c_level < 6.5 ~ "5.7–6.4 (prediabetic)",
       HbA1c_level >= 6.5                    ~ "≥ 6.5 (diabetic)"
     ),
-    hypertension = factor(hypertension, levels = c(0,1),
+    hypertension = factor(hypertension, levels = c(0,1), #creating hypertension to a factor
                           labels = c("No", "Yes"))
   ) %>%
   group_by(HbA1c_cat, hypertension) %>%
   summarise(n = n(), .groups = "drop_last") %>%
   mutate(percent = n / sum(n))  # auto‑groups by HbA1c_cat
-
-
-
-
+# plot
 ggplot(df_summary, aes(x = HbA1c_cat,
                        y = percent,
                        fill = factor(hypertension))) +
@@ -471,17 +464,18 @@ ggplot(df_summary, aes(x = HbA1c_cat,
 ```
 
 ___
+### Diabetic range for men
 
+This graph shows the population density of men based on diabetes status, based on age range
 ```{r, echo=FALSE}
 library(ggplot2)
-
-
+# assigning dataset
 df_male <- diabetes_dataset %>% 
   filter(gender == "Male") %>% 
-  mutate(diabetes = factor(diabetes,
+  mutate(diabetes = factor(diabetes, #making diabetes status as a factor
                            levels = c(0,1),
                            labels = c("Non‑diabetic","Diabetic")))
-
+# ggplot code
 male_diabetic_dens = ggplot(df_male, aes(x = age, fill = diabetes)) +
   geom_density(alpha = 0.5) +
   scale_fill_manual(
@@ -501,16 +495,18 @@ ggplotly(male_diabetic_dens)
 
 ___
 
+### Diabetic range for women
+
+This graph shows the population density of women based on diabetes status, based on age range
 ```{r, echo=FALSE}
 library(ggplot2)
-
-
+# assigning dataset
 df_female <- diabetes_dataset %>% 
   filter(gender == "Female") %>% 
-  mutate(diabetes = factor(diabetes,
+  mutate(diabetes = factor(diabetes, #making diabetes status as a factor
                            levels = c(0,1),
                            labels = c("Non‑diabetic","Diabetic")))
-
+# ggplot code
  female_diabetic_dens = ggplot(df_female, aes(x = age, fill = diabetes)) +
   geom_density(alpha = 0.5) +
   scale_fill_manual(
@@ -530,94 +526,6 @@ df_female <- diabetes_dataset %>%
 ```
 
 ---
-
-# Smokers go brrr# Smokers go brrrgeom_boxplot()
-
-In the smoking data there are 6 unique values
-
-1)  Never: Has Never smoked
-2)  Not current: Has smoked but is not currently smoking
-3)  Former: Has quit smoking (abstained for longer than)
-4)  Current: Is currently a smoker
-5)  Ever: Has ever smoked regardless of current smoking status
-6)  No Info: No smoking history information available
-
-The total amount of people who fall into each category is as follows;
-
-1)  Never: 35095
-2)  Not current: 6447
-3)  Former: 9352
-4)  Current: 9286
-5)  Ever: 4004
-6)  No Info: 35816
-
-There is quite a sizable amount of people in the No info category.
-
-The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help clean up the data, we can filter 'No Info' people out. When we do that we get `r nrow(diabetes_dataset %>% filter(smoking_history != 'No Info'))`.
-
-```{r Cleaning smoking data}
-
-# Figure out the unique categories of smoking history
-unique(diabetes_dataset$smoking_history)
-
-# Count amount of people who belong to each unique smoking category
-#Omit No info
-
-smoking_tally <- diabetes_dataset %>% filter(smoking_history != 'No Info') %>%  group_by(smoking_history) %>% summarise(total_people = n())
-
-#group diabetic vs non diabetic people together
-
-smoking_diabetes_dataset <- diabetes_dataset %>%
-  filter(smoking_history != 'No Info') %>%  
-  group_by(smoking_history, diabetes) %>%  
-  summarise(total = n())
-
-smoking_diabetes_dataset
-
-# Inner join tally data with diabetic grouped data;
-#mutate a column to create a percentage per category;
-#select desired columns
-
-smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_dataset, by = 'smoking_history') %>% mutate(Percentage = total/total_people *100) %>% select(smoking_history, diabetes, total, Percentage)
-
-smoking_diabetes_percentage
-```
-
-Now we can graph the relationship between smoking and diabetes as separated by smoking category.
-
-```{r Plotting smoking data}
-library(ggplot2)
-library(plotly)
-
-#Create initial graph about smoking and diabetes
-
-smoking_diabetes_graph <- ggplot(smoking_diabetes_percentage) + 
-  geom_col(aes(x = smoking_history, y = total, fill = as.factor(diabetes)), position = 'dodge') 
-
-smoking_diabetes_graph <- smoking_diabetes_graph + coord_flip() + labs(
-  title = 'Smoking History and Diabetes Relationship',
-  y = 'People',
-  x = 'Smoking History',
-  fill = 'Has Diabetes',
-  caption = "1 indicates diabetes, 0 indicates no diabetes"
-  ) 
-
-smoking_diabetes_graph
-```
-
-
-```{r Smoking on that percentage pack tonight tonight}
-
-ggplot(smoking_diabetes_percentage) + geom_col(aes(x = smoking_history, y = Percentage, fill = as.factor(diabetes)))
-```
-
-
-
-
-
-
-
-
 
 
 
