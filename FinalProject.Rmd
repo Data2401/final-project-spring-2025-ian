@@ -104,6 +104,7 @@ kable(head(get_perc_count, 5), caption = "6 x 4 (first 5 rows)")
 ### Age Distribution in Diabetes, Heart Disease, and Hypertension Plot
 
 
+
 ```{r,echo=FALSE,fig.width=9, fig.height=5}
 library(dplyr)
 library(ggplot2)
@@ -248,6 +249,11 @@ ggplotly(diabetes_and_no_diabetes_plot)
 ---
 
 ### BMI vs. Age Across Diabetes & Heart Disease Plot
+
+- Here we will compare the age and BMI of individuals with heart disease only and individuals with diabetes only. We can observe that there is a common BMI of 27.32 for both conditions. 
+
+- An overweight BMI ranges from 25.0 -29.9 , with this information we conclude that many individuals from both conditions are categorized as overweight.
+
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
 library(dplyr)
