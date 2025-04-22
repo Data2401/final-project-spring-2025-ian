@@ -417,6 +417,7 @@ ggplot(men_women_df, aes(x = sex, y = count, fill = sex)) +
 ```
 
 ---
+
 ### A relation to hypertension?
 
 This depicts the different categories of HbA1c levels and their relation to patients hypertension status
@@ -457,7 +458,8 @@ ggplot(df_summary, aes(x = HbA1c_cat,
 
 ```
 
-___
+---
+
 ### Diabetic range for men
 
 This graph shows the population density of men based on diabetes status, based on age range
@@ -487,7 +489,7 @@ male_diabetic_dens = ggplot(df_male, aes(x = age, fill = diabetes)) +
 ggplotly(male_diabetic_dens)
 ```
 
-___
+---
 
 ### Diabetic range for women
 
