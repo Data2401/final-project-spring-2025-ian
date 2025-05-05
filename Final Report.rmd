@@ -20,6 +20,7 @@ library(plotly) ## Loaded for interactive plots
 library(readr) ## Loaded to read in data
 library(knitr) ## Loaded to compute and display data
 library(scales) ## Loaded to scale data 
+library(dplyr) ## Loaded for data manipulation
 ```
 
 ### Loading the data set
@@ -31,14 +32,22 @@ glimpse(diabetes_dataset)
 
 ### Data Variables
 
-**Gender**: The biological sex of the individual
-**Age**: Refers to the age of the individual
+**Gender**: The biological sex of the individual.
+
+**Age**: Refers to the age of the individual.
+
 **Hypertension**: Indicates whether individuals have this condition.
+
 **Heart disease**: Indicates whether individuals have this condition.
+
 **Smoking history**: Identifies individual's smoking history.
-**BMI**: A measure of body fat based on weight and height. 
+
+**BMI**: A measure of body fat based on weight and height.
+
 **HbA1c level**: Refers to the measure of a person's average blood sugar level over the past 2-3 months. 
+
 **Blood glucose level**: Refers to the amount of glucose in the bloodstream at a given time.
+
 **Diabetes**: Variable being predicted, with values of 1 indicating the presence of diabetes and 0 indicating no presence.
 
 
@@ -54,11 +63,7 @@ The y label is the proportion, in the x label we have female and male. Then we h
 - Pre-diabetic blood sugar levels are nearly identical for both male and females, which suggests that pre-diabetes affects both genders at nearly the same rate.
 - Overall, blood sugar regulation patterns appear balanced between both genders.
 
-```{r, echo=FALSE, fig.width=8, fig.height=6, fig.align="center"}
-library(dplyr)
-library(ggplot2)
-library(plotly)
-library(knitr) 
+```{r, fig.width=8, fig.height=6, fig.align="center"}
 
 # select, filter, and mutate the columns I want to work with 
 
@@ -115,11 +120,7 @@ kable(head(get_perc_count, 5), caption = "6 x 4 (first 5 rows)")
 
 -   Younger individuals (under 50) are more likely to be free of these conditions.
 
-```{r,echo=FALSE,fig.width=9, fig.height=5}
-library(dplyr)
-library(ggplot2)
-library(plotly)
-library(knitr) 
+```{r,fig.width=9, fig.height=5}
 
 # show a density plot to display age distribution based on diabetes and heart disease
 # I create 2 new variables based on my original data set, I select and filter the columns I want to work with
@@ -167,11 +168,7 @@ The graph below is separated by whether or not a person has hypertension. With t
 
 -   Outliers or extreme values might appear as small bulges or extended tails at the ends of the chart, showing individuals with very high or low BMI.
 
-```{r, echo=FALSE,fig.width=7, fig.height=6, fig.align="center"}
-library(dplyr)
-library(ggplot2)
-library(plotly)
-library(knitr) 
+```{r,fig.width=7, fig.height=6, fig.align="center"}
 
 kable(head(diabetes_dataset, 5), caption = "10,000 x 9 (first 5 rows)") # display the diabetes_dataset table
 
@@ -208,11 +205,7 @@ ggplotly(BMI_distribution)
 
 -   For individuals with diabetes, a blood sugar level can range from 200+ mg/dL after 2-3 hours of eating.
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=7, fig.height=6}
-library(dplyr)
-library(ggplot2)
-library(plotly)
-library(knitr) 
+```{r, message=FALSE, warning=FALSE, fig.width=7, fig.height=6}
 
 # these are the variables I worked with to create this table
 table_diabetes_no_diabetes <- diabetes_dataset %>%
@@ -256,10 +249,7 @@ ggplotly(diabetes_and_no_diabetes_plot)
 
 -   An overweight BMI ranges from 25.0 -29.9 , with this information we conclude that many individuals from both conditions are categorized as overweight.
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
-library(dplyr)
-library(ggplot2)
-library(knitr) 
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
 
 #diabetes_dataset
 
