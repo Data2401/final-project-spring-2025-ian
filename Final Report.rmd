@@ -331,11 +331,11 @@ ggplot(combined_dataaa) +
 
 Each person within this scale has heart disease. Here a comparison is made between declared underweight and overweight people, grouped by sex, based on a BMI scale. There's a significant increase in population percentage for those who are considered overweight and that have heart disease. With visual aid, it can be concluded that as weight increases, chances of heart disease will increase.
 
-```{r, echo=FALSE}
+```{r}
 library(ggplot2)
 library(dplyr)
 
-
+# categories
 bmi_heart_gender <- diabetes_dataset %>%
   filter(heart_disease == 1) %>%
   mutate(
@@ -354,11 +354,9 @@ bmi_heart_gender <- diabetes_dataset %>%
 
 bmi_heart_gender$bmi_category <- factor(bmi_heart_gender$bmi_category,
                                         levels = c("Underweight", "Overweight"))
-
-
 max_ct <- max(bmi_heart_gender$count)
-y_breaks <- pretty(c(0, max_ct), n = 10)    # ~10 ticks
-
+y_breaks <- pretty(c(0, max_ct), n = 10)   
+#plot
 ggplot(bmi_heart_gender,
        aes(x = bmi_category,
            y = count,
@@ -387,9 +385,9 @@ ggplot(bmi_heart_gender,
 
 ### An excpetion?
 
-The data here is heavily dependent on BMI scale. It is important to note that BMI is not really a great determination for those who have diabetes, but there is a general trend within the data that people who have a BMI over 30 are more likely to be diabetic.
+The data here is heavily dependent on BMI scale. It is important to note that BMI is not really a great determination for those who have diabetes, but there is a general trend within the data that people who have a BMI over 30 are more likely to be diabetic. In this graph we see that the percentages are that of people who are considered overweight and do not have diabetes. So, for the 18% represented of overweight men without diabetes there is 82% of overweight men with diabetes. The same logic applies to the data related to females. 
 
-```{r, echo=FALSE}
+```{r}
 library(dplyr)
 library(ggplot2)
 
@@ -437,9 +435,9 @@ ggplot(men_women_df, aes(x = sex, y = count, fill = sex)) +
 
 ### A relation to hypertension?
 
-This depicts the different categories of HbA1c levels and their relation to patients hypertension status
+This depicts the different categories of HbA1c levels and their relation to a patients hypertension status
 
-```{r, echo=FALSE}
+```{r}
 library(dplyr)
 library(ggplot2)
 library(scales)
@@ -456,7 +454,7 @@ df_summary <- diabetes_dataset %>%
   ) %>%
   group_by(HbA1c_cat, hypertension) %>%
   summarise(n = n(), .groups = "drop_last") %>%
-  mutate(percent = n / sum(n))  # auto‑groups by HbA1c_cat
+  mutate(percent = n / sum(n))  # groups by HbA1c_cat
 # plot
 ggplot(df_summary, aes(x = HbA1c_cat,
                        y = percent,
@@ -480,7 +478,7 @@ ggplot(df_summary, aes(x = HbA1c_cat,
 
 ### Diabetic range for men
 
-This graph shows the population density of men based on diabetes status, based on age range
+This graph shows the population density of men based on diabetes status, based on age range. Within our data, it is seen that there is a peak seen where a large population of men are diagnosed with diabetes around the age of 65. It is also seen that diabetes occurs for a significant population starting around the age of 20. 
 
 ```{r, echo=FALSE}
 library(ggplot2)
@@ -512,9 +510,9 @@ ggplotly(male_diabetic_dens)
 
 ### Diabetic range for women
 
-This graph shows the population density of women based on diabetes status, based on age range
+This graph shows the population density of women based on diabetes status, based on age range. Within our data, it is seen that there is a peak seen where a large population of women are diagnosed with diabetes around the age of 65. It is also seen that diabetes occurs for a significant population starting around the age of 30.
 
-```{r, echo=FALSE}
+```{r}
 library(ggplot2)
 # assigning dataset
 df_female <- diabetes_dataset %>% 
