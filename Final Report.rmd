@@ -107,7 +107,7 @@ get_perc_count_plotly <- ggplot(get_perc_count, aes(x = gender, y = n, fill = Hb
 
 ggplotly(get_perc_count_plotly)
 
-kable(head(get_perc_count, 5), caption = "6 x 4 (first 5 rows)")
+kable(head(get_perc_count, 5), caption = "6 x 4 (first 5 rows)") # showing the first 5 rows of the data set
 ```
 
 ------------------------------------------------------------------------
