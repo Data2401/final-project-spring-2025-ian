@@ -1,0 +1,148 @@
+---
+title: "Final Report"
+output: html_document
+author: "Adam Guenoun, Indira Martinez, Nicholas Solis"
+date: "2025-05-05"
+---
+
+### Introduction:
+
+[Website to visit our Diabetes Prediction data  set](https://www.kaggle.com/datasets/iammustafatz/diabetes-prediction-dataset/data)
+
+Within this analysis, we'll investigate factors correlated to diabetes. With a data set of 100,000 people, this investigation allows us to display relations between ages, HbA1c levels, smoking history, and glucose levels. With a wide range of data points, we begin to question if there are trends within this data that match our general understanding of diabetes. Our goal is to asses which of the 9 variables play a stronger role to the development of diabetes and if we can prove trends to better support our assumptions of this data. Through data visualization, chart analysis, and numerical analysis we will be able to present this data to convince a general audience of the important factors that contribute to diabetic trends.
+
+### libraries Used
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse) ## Loaded for dplyr
+library(ggplot2) ## Loaded for plotting
+library(plotly) ## Loaded for interactive plots
+library(readr) ## Loaded to read in data
+library(knitr) ## Loaded to compute and display data
+library(scales) ## Loaded to scale data 
+```
+
+### Loading the data set
+
+```{r Loading in Data, include=FALSE}
+library(readr)
+diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv")
+glimpse(diabetes_dataset)
+```
+
+### Data Variables
+
+**Gender**: The biological sex of the individual
+**Age**: Refers to the age of the individual
+**Hypertension**: Indicates whether individuals have this condition.
+**Heart disease**: Indicates whether individuals have this condition.
+**Smoking history**: Identifies individual's smoking history.
+**BMI**: A measure of body fat based on weight and height. 
+**HbA1c level**: Refers to the measure of a person's average blood sugar level over the past 2-3 months. 
+**Blood glucose level**: Refers to the amount of glucose in the bloodstream at a given time.
+**Diabetes**: Variable being predicted, with values of 1 indicating the presence of diabetes and 0 indicating no presence.
+
+## Diabetes Dataset
+
+Here we are showing the first 6 rows of our diabetes data set
+
+```{r, echo=FALSE,fig.width=4, fig.height=4 }
+library(knitr)
+diabetes_dataset
+kable(head(diabetes_dataset, 6), caption = "100,000 × 9 (first 6 rows)")
+```
+
+### Male vs. Female Blood Sugar Levels (HbA1c) Plot
+
+For our first plot we filtered our data to categorize males and females as diabetic, pre-diabetic, and normal **based on blood sugar levels(HbA1c)**. To do this we selected the variables of interest which are gender, diabetes, and HbA1c_level. after this we 
+We did some research and determined that a normal blood sugar level is less than 5.7%, pre-diabetic ranges between 5.7-6.4% and diabetic is greater and equal to 6.5%. 
+ 
+The y label is the proportion, in the x label we have female and male. Then we have a legend showing the blood sugar category. Within this analysis we were able to argue that the blood sugar level categorizes individuals as diabetic even if they DON’T have diabetes. Which is an interesting insight and seems contradictory at the same time. 
+
+- Slightly higher diabetic blood sugar levels among males.
+- Slightly higher normal blood sugar levels among females.
+- Pre-diabetic blood sugar levels are nearly identical for both male and females, which suggests that pre-diabetes affects both genders at nearly the same rate.
+- Overall, blood sugar regulation patterns appear balanced between both genders.
+
+```{r, echo=FALSE, fig.width=8, fig.height=6, fig.align="center"}
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(knitr) 
+
+# select, filter, and mutate the columns I want to work with 
+
+mut_diabdat_for_BSL <- diabetes_dataset %>%
+  select(gender, diabetes, HbA1c_level) %>%
+  filter(gender != "Other") %>%       # we want to focus on male and female only
+  mutate(HbA1c_category = case_when(  # categorize diabetes status based on BSL
+    HbA1c_level < 5.7 ~ "Normal < 5.7%",
+    HbA1c_level >= 5.7 & HbA1c_level <= 6.4 ~ "Prediabetic 5.7% - 6.4%",
+    HbA1c_level >= 6.5 ~ "Diabetic ≥ 6.5%",
+    TRUE ~ NA_character_
+  ))
+
+kable(head(mut_diabdat_for_BSL, 5), caption = "99,982 x 4 (first 5 rows)")
+
+# count, group_by, and mutate to obtain the number and percentage for each diabetic category for M and F
+
+get_perc_count <- mut_diabdat_for_BSL %>% 
+  count(gender, HbA1c_category) %>%  # new count col of the number of people within each category for M and F
+  group_by(gender) %>%   # group by gender
+  mutate(percent = n / sum(n) * 100) # get percentage of population within each diabetic category
+
+# create my barplot, add x and y labels as well as color and text details. 
+get_perc_count_plotly <- ggplot(get_perc_count, aes(x = gender, y = n, fill = HbA1c_category)) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.1, alpha = 0.5) + 
+  geom_text(aes(label = paste0(n, " (", round(percent, 1), "%)")),
+            position = position_fill(vjust = 0.5), size = 3) +
+  scale_fill_manual(values = c("Normal < 5.7%" = "cornsilk2", 
+                               "Prediabetic 5.7% - 6.4%" = "darkkhaki", 
+                               "Diabetic ≥ 6.5%" = "darkgoldenrod4")) +
+  labs(title = "Male vs. Female Blood Sugar Levels (HbA1c)", 
+       x = "Gender", y = "Proportion", fill = "HbA1c Category") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(
+    plot.title = element_text(size = 13),
+    axis.text = element_text(size = 11),
+  )
+
+# here I make the bar plot interactive using ggplotly
+
+ggplotly(get_perc_count_plotly)
+
+kable(head(get_perc_count, 5), caption = "6 x 4 (first 5 rows)")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
