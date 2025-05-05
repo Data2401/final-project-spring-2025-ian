@@ -470,7 +470,7 @@ ggplot(df_summary, aes(x = HbA1c_cat,
 
 This graph shows the population density of men based on diabetes status, based on age range. Within our data, it is seen that there is a peak seen where a large population of men are diagnosed with diabetes around the age of 65. It is also seen that diabetes occurs for a significant population starting around the age of 20. 
 
-```{r, echo=FALSE}
+```{r}
 library(ggplot2)
 # assigning dataset
 df_male <- diabetes_dataset %>% 
