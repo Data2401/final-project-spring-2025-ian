@@ -108,7 +108,7 @@ get_perc_count_plotly <- ggplot(get_perc_count, aes(x = gender, y = n, fill = Hb
     axis.text = element_text(size = 11),
   )
 
-# here I make the bar plot interactive using ggplotly
+# bar plot interactive using ggplotly
 
 ggplotly(get_perc_count_plotly)
 
