@@ -11,7 +11,7 @@ date: "2025-05-05"
 
 Within this analysis, we'll investigate factors correlated to diabetes. With a data set of 100,000 people, this investigation allows us to display relations between ages, HbA1c levels, smoking history, and glucose levels. With a wide range of data points, we begin to question if there are trends within this data that match our general understanding of diabetes. Our goal is to asses which of the 9 variables play a stronger role to the development of diabetes and if we can prove trends to better support our assumptions of this data. Through data visualization, chart analysis, and numerical analysis we will be able to present this data to convince a general audience of the important factors that contribute to diabetic trends.
 
-### Libraries Used
+### Libraries used
 
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse) # Loaded for dplyr
@@ -30,7 +30,7 @@ diabetes_dataset <- read_csv("diabetes_prediction_dataset.csv", show_col_types =
 glimpse(diabetes_dataset)
 ```
 
-### Data Variables
+### Data variables
 
 **Gender**: The biological sex of the individual.
 
@@ -154,11 +154,13 @@ ggplotly(interactive_DHH)
 ```
 
 ------------------------------------------------------------------------
+
 ### BMI Distribution by Hypertension Status Plot
 
 **Is there a correlation between body mass index and hypertension status?**
 
 To create this plot, we focused on the BMI and Hypertension variables from our data set. 0 representing no hypertension and 1 representing hypertension. From this graph we concluded that there is a correlation between BMI and hypertension status. We observe that individuals with hypertension tend to have higher BMI values compared to those without hypertension.
+
 
 ```{r,fig.width=7, fig.height=6, fig.align="center"}
 
@@ -880,25 +882,37 @@ Although current smokers risk is not reflected through our percentage graph, fur
 
 ------------------------------------------------------------------------
 
-### Conclusion
+## Conclusion
 
-Within this analysis we've scaled: - Diabetes status based by age and sex - Relations towards BMI and Hypertension status - Shared populations between Diabetes, heart disease, and hypertension status - HbA1c trends among sexes - Glucose levels dependent by diabetes status - Smoking status and its relation to Diabetes, heart disease, and hypertension
+**Within this analysis we've scaled**: 
+
+- Diabetes status based by age and gender 
+
+- Relations towards BMI and Hypertension status 
+
+- Shared populations between Diabetes, heart disease, and hypertension status 
+
+- HbA1c trends among gender 
+
+- Glucose levels dependent by diabetes status 
+
+- Smoking status and its relation to Diabetes, heart disease, and hypertension
 
 From this we were able to to effectively show and defend our general assumptions about diabetes and its co factors
 
-# Limitations:
+## Limitations within our data
 
-This data is was gathered from private medical records. Because of confidentiality, the gathering methods of the data were not clear.
+- This data is was gathered from private medical records. Because of confidentiality, the gathering methods of the data were not clear.
 
-This data does not indicate whether our diabetic patients are type 1 or type 2 diabetic
+- This data does not indicate whether our diabetic patients are type 1 or type 2 diabetic
 
-This data is generated from various studies, making up the 100,000 patients
+- This data is generated from various studies, making up the 100,000 patients
 
-Blood glucose levels were not detailed on how this data was retrieved. Methods of measuring blood glucose levels vary from multiple hour fasts to immediately after a meal, each of which having different ranges to indicate diabetes. 
+- Blood glucose levels were not detailed on how this data was retrieved. Methods of measuring blood glucose levels vary from multiple hour fasts to immediately after a meal, each of which having different ranges to indicate diabetes. 
 
-Smoking History had a sizable number of omissions due to no info being gathered. Also, some of the categories are unclear in their definitions. An example of this is the not current category. Could they have been included in the former category, or if they are only abstaining for a set time period would they still be considered current? 
+- Smoking History had a sizable number of omissions due to no info being gathered. Also, some of the categories are unclear in their definitions. An example of this is the not current category. Could they have been included in the former category, or if they are only abstaining for a set time period would they still be considered current? 
 
-The maximum age in the data is 80, however spikes at the age 80 range were noted. There may have been a moment where all data collected of ages older than 80 were assigned the age 80. However, we cannot be sure as no info was given.
+- The maximum age in the data is 80, however spikes at the age 80 range were noted. There may have been a moment where all data collected of ages older than 80 were assigned the age 80. However, we cannot be sure as no info was given.
 
 
 
