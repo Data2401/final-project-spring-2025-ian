@@ -743,9 +743,22 @@ smoking_hypertension_graph
 
 ```
 
+The hypertension category reveals something a little different than the trend, as not current smokers have the lowest percentage of hypertension. Current and Never smokers are at essentially the same percentage, with current smokers having a slightly slower risk. Similar to the heart disease data, former smokers have the highest percentage of hypertension, and ever smokers following.
+
+1)  Never: 9.1%
+
+2)  Not current: 7.6%
+
+3)  Former: 14.3%
+
+4)  Current: 9.0%
+
+5)  Ever: 10.5%
+
+
 # Age as a Factor
 
-When looking at the data, there is a spike in former smokers risk for the three health issues discussed.
+When looking at the data, there is a spike in former smokers risk for the three health complications discussed. 
 
 Questions arose; If you never quit smoking, do you maintain similar risk to people who never have smoked? What changes from current to former smokers?
 
@@ -754,6 +767,8 @@ To have been classified a former smoker, you at one point had to have been a cur
 This lead to me graphing the density of smoking category by age.
 
 # Age and Smoking History Category
+
+A density plot of the age range by smoking category is created to visualize the ages where each smoking category range from.
 
 ```{r Age by smoking category, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -771,6 +786,8 @@ smoking_age_density <- ggplot(smoking_data, aes(x = age, color = as.factor(smoki
        
 smoking_age_density       
 ```
+
+The density plot shows an increase in former smokers from the 40-60 age range, while all other categories begin to decrease. 
 
 # The Age and Health Factors
 
