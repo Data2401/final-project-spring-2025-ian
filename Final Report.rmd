@@ -882,9 +882,9 @@ Although current smokers risk is not reflected through our percentage graph, fur
 
 ------------------------------------------------------------------------
 
-## Conclusion
+## Overall conclusion
 
-**Within this analysis we've scaled**: 
+**Within our data analysis we've scaled**: 
 
 - Diabetes status based by age and gender.
 
