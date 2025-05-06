@@ -43,7 +43,7 @@ For our first plot we filtered our data to categorize males and females as diabe
 - Slightly higher diabetic blood sugar levels among males.
 - Slightly higher normal blood sugar levels among females.
 - Pre-diabetic blood sugar levels are nearly identical for both male and females, which suggests that pre-diabetes affects both genders at nearly the same rate.
-- Overall, blood sugar regulation patterns appear balanced between both genders.
+- Overall, blood sugar regulation patterns appear balanced between both genders. However blood sugar levels do not indicate diabetes status when compared to the diabetes variable.
 
 ```{r, echo=FALSE, fig.width=8, fig.height=6, fig.align="center"}
 library(dplyr)
@@ -102,9 +102,11 @@ ggplotly(get_perc_count_plotly)
 
 -   Our density plot supports the correlation between aging and disease prevalence between two different groups, the first group are individuals with all three conditions and the second group are individuals who are free from all three these conditions.
 
--   Older individuals (50+) are much more likely to have diabetes, heart disease, and hypertension.
+- Older individuals (50+) are much more likely to have diabetes, heart disease, and hypertension.
 
--   Younger individuals (under 50) are more likely to be free of these conditions.
+- Younger individuals (under 50) are more likely to be free of these conditions.
+
+- From this graph we conclude that the shifting density emphasizes how the risk of diabetes, heart disease, and hypertension increases with age
 
 ```{r,echo=FALSE,fig.width=9, fig.height=5}
 library(dplyr)

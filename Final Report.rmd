@@ -14,13 +14,13 @@ Within this analysis, we'll investigate factors correlated to diabetes. With a d
 ### Libraries Used
 
 ```{r, message=FALSE, warning=FALSE}
-library(tidyverse) ## Loaded for dplyr
-library(ggplot2) ## Loaded for plotting
-library(plotly) ## Loaded for interactive plots
-library(readr) ## Loaded to read in data
-library(knitr) ## Loaded to compute and display data
-library(scales) ## Loaded to scale data 
-library(dplyr) ## Loaded for data manipulation
+library(tidyverse) # Loaded for dplyr
+library(ggplot2) # Loaded for plotting
+library(plotly) # Loaded for interactive plots
+library(readr) # Loaded to read in data
+library(knitr) # Loaded to compute and display data
+library(scales) # Loaded to scale data 
+library(dplyr) # Loaded for data manipulation
 ```
 
 ### Loading the data set
@@ -53,15 +53,9 @@ glimpse(diabetes_dataset)
 
 ### Male vs. Female Blood Sugar Levels (HbA1c) Plot
 
-For our first plot we filtered our data to categorize males and females as diabetic, pre-diabetic, and normal **based on blood sugar levels(HbA1c)**. To do this we selected the variables of interest which are gender, diabetes, and HbA1c_level. after this we 
-We did some research and determined that a normal blood sugar level is less than 5.7%, pre-diabetic ranges between 5.7-6.4% and diabetic is greater and equal to 6.5%. 
- 
-The y label is the proportion, in the x label we have female and male. Then we have a legend showing the blood sugar category. Within this analysis we were able to argue that the blood sugar level categorizes individuals as diabetic even if they DON’T have diabetes. Which is an interesting insight and seems contradictory at the same time. 
+**Can we predict diabetes status based on blood sugar levels?**
 
-- Slightly higher diabetic blood sugar levels among males.
-- Slightly higher normal blood sugar levels among females.
-- Pre-diabetic blood sugar levels are nearly identical for both male and females, which suggests that pre-diabetes affects both genders at nearly the same rate.
-- Overall, blood sugar regulation patterns appear balanced between both genders.
+For our first plot we filtered our data to categorize males and females as diabetic, pre-diabetic, and normal based on blood sugar levels(HbA1c). To do this we selected the variables of interest which are gender, diabetes, and HbA1c_level. From the first table shown we are able to see that blood sugar levels not necessarily define the diabetes status of the individuals within our data set.
 
 ```{r, fig.width=8, fig.height=6, fig.align="center"}
 
@@ -114,30 +108,28 @@ kable(head(get_perc_count, 5), caption = "6 x 4 (first 5 rows)") # showing the f
 
 ### Age Distribution in Diabetes, Heart Disease, and Hypertension Plot
 
--   Our density plot supports the correlation between aging and disease prevalence between two different groups, the first group are individuals with all three conditions and the second group are individuals who are free from all three these conditions.
+**How is age related to diabetes, heart disease, and hypertension?**
 
--   Older individuals (50+) are much more likely to have diabetes, heart disease, and hypertension.
-
--   Younger individuals (under 50) are more likely to be free of these conditions.
+To create this density plot we created 2 different groups of individuals the first group are individuals with all 3 conditions which are diabetes, heart disease, and hypertension while the second group is free from all 3 conditions. After separating the 2 groups we brought it together to create a density plot and show the distribution within age. From this graph we concluded that there is a relationship between age and these 3 conditions. From the graph we observe that older individuals tend to have all 3 conditions.
 
 ```{r,fig.width=9, fig.height=5}
 
 # show a density plot to display age distribution based on diabetes and heart disease
 # I create 2 new variables based on my original data set, I select and filter the columns I want to work with
 
-DHH_only <- diabetes_dataset %>% 
+DHH_only <- diabetes_dataset %>% # individuals with all 3 conditions
   select(age, diabetes, heart_disease, hypertension) %>%  
   filter(age >= 2, diabetes == 1, heart_disease == 1, hypertension == 1) %>%
   mutate(group = "Diabetes, H.D, and Hyp.")
 
-kable(head(DHH_only, 5), caption = "358 x 5 (first 5 rows)")
+kable(head(DHH_only, 5), caption = "358 x 5 (first 5 rows)") #showing the table
 
-No_DHH_only <- diabetes_dataset %>%
+No_DHH_only <- diabetes_dataset %>% # individuals free from all 3 conditions
   select(age,heart_disease, diabetes, hypertension) %>%
   filter(age >= 2, diabetes == 0, heart_disease == 0, hypertension ==0) %>%
   mutate(group = "Free of Diabetes, H.D, and Hyp.")
 
-kable(head(No_DHH_only, 5), caption = "81,885 x 5 (first 5 rows)")
+kable(head(No_DHH_only, 5), caption = "81,885 x 5 (first 5 rows)") #showing the table
 
 # create the density plot, I name my x and y labels, title, color, fill, and plot size details
 interactive_DHH <- ggplot() +
@@ -164,9 +156,9 @@ ggplotly(interactive_DHH)
 ------------------------------------------------------------------------
 ### BMI Distribution by Hypertension Status Plot
 
-The graph below is separated by whether or not a person has hypertension. With the comparison of BMI as the range, it's seen that majority of people with and without hypertension lie within a BMI range of 25-29. Notice that for people with hypertension, the desnity population above the red line is greater than that of people without hypertension; indicating that there's a larger of population of people with hypertension that have a larger BMI
+**Is there a correlation between body mass index and hypertension status?**
 
--   Outliers or extreme values might appear as small bulges or extended tails at the ends of the chart, showing individuals with very high or low BMI.
+To create this plot we focused on the BMI and Hypertension variables from our data set. 0 representing no hypertension and 1 representing hypertension. From this graph we concluded that there is a correlation within BMI and hypertension status. We observe that individuals with hypertension tend to have higher BMI values compared to those without hypertension.
 
 ```{r,fig.width=7, fig.height=6, fig.align="center"}
 
@@ -177,7 +169,7 @@ overall_median_bmi <- median(diabetes_dataset$bmi, na.rm = TRUE) # new variable 
 #create a violin plot, hypertension is selected as our x variable and bmi as our y variable
 BMI_distribution <- ggplot(diabetes_dataset, aes(x = factor(hypertension), y = bmi, fill = factor(hypertension))) + # use factor so that hypertension can be treated as a factor
   geom_violin(alpha = 0.6) +
-  geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", linewidth = 0.3) +
+  geom_hline(yintercept = overall_median_bmi, linetype = "solid", color = "red", linewidth = 0.3) + #Line marks a 27 BMI which is classified as an overweight value
   scale_fill_manual(values = c("azure3", "#CC6600")) +
    scale_y_continuous(breaks = seq(10.01, 95.69, by = 5)) +
   labs(title = "BMI Distribution by Hypertension Status",
@@ -199,11 +191,10 @@ ggplotly(BMI_distribution)
 
 ### Blood Glucose Levels by Diabetes Status (age 3-80) Plot
 
--   Comparing blood glucose levels by diabetes status only for individuals from ages 3-80. We selected this age range because here we have the youngest and oldest people with diabetes.
+**Whats the correlation between blood glucose levels and diabetes?**
 
--   For individuals with no diabetes, a blood sugar level can range from 120–140 mg/dL after 2-3 hours of eating.
+In this box plot we are comparing blood glucose levels by diabetes status, focusing on individuals within ages 3-80 because the youngest individual with diabetes is 3 years old and the oldest is 80. . From this plot we conclude that there is a strong correlation between both variables. From this graph we observe that individuals with higher blood glucose levels tend to fall within the diabetes status.
 
--   For individuals with diabetes, a blood sugar level can range from 200+ mg/dL after 2-3 hours of eating.
 
 ```{r, message=FALSE, warning=FALSE, fig.width=7, fig.height=6}
 
@@ -245,9 +236,9 @@ ggplotly(diabetes_and_no_diabetes_plot)
 
 ### BMI vs. Age Across Diabetes & Heart Disease Plot
 
--   Here we will compare the age and BMI of individuals with heart disease only and individuals with diabetes only. We can observe that there is a common BMI of 27.32 for both conditions.
+**Is BMI associated with diabetes, heart disease, and age across out data?**
 
--   An overweight BMI ranges from 25.0 -29.9 , with this information we conclude that many individuals from both conditions are categorized as overweight.
+In this scatter plot we are comparing the age and BMI of 2 different groups of individuals, the first group is the group of individuals with diabetes only and the second group are individuals with a heart disease condition. To achieve these results we created 2 different tables for each group, then we combined the data to create our plot. In the graph we marked a red horizontal line representing the most common BMI for both groups. We concluded that there is a strong correlation between both conditions, BMI, and age. Higher BMI and older age are related to both conditions. We detected a high concentration of individuals who are 80 years old. This could be because diabetes and heart disease tend to be more common among older adults, besides that we discovered that our data set includes a disproportionately high number of individuals within the age of 80.
 
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
 
