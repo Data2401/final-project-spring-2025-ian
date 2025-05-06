@@ -514,7 +514,7 @@ df_female <- diabetes_dataset %>%
 
 ------------------------------------------------------------------------
 
-## Smoking
+### Smoking
 
 In the smoking data there are 6 unique values
 
@@ -554,7 +554,7 @@ The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help
 smoking_tally <- diabetes_dataset %>% filter(smoking_history != 'No Info') %>%  group_by(smoking_history) %>% summarise(total_people = n())
 ```
 
-# Sumarizing diabetes and smoking history
+### Sumarizing diabetes and smoking history
 
 The data was then summarized to gather the total counts belonging to each smoking category and further grouped by diabetes status.
 
@@ -576,7 +576,7 @@ smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_datase
 
 ```
 
-# Graphing the Data
+### Graphing the Data
 
 Now we can graph the relationship between smoking and diabetes as separated by smoking category.
 
@@ -628,7 +628,7 @@ The graph reveals that 17% of former smokers have diabetes, a significantly high
 5)  Ever: 11.8%
 
 
-## Heart disease and Smoking
+### Heart disease and Smoking
 
 This data also included information about heart disease status. The same filters and groupings applied to the diabetes and smoking data was applied with heart disease as the focus.
 
@@ -643,7 +643,7 @@ smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_dise
 
 ```
 
-# Graphing relationship of Smoking History and Heart Disease
+### Graphing relationship of Smoking History and Heart Disease
 
 ```{r Heart Disease and Smoking Graph}
 smoking_heart_disease_graph <- ggplot(smoking_heart_disease_percentage,
@@ -690,7 +690,7 @@ The graph reveals a similar relationship, but at much lower percentages. Never s
 
 The lower percentages indicate less correlation between smoking and heart disease, however the trend of former smokers having higher risk for disease still exists.
 
-# Smoking and Hypertension
+### Smoking and Hypertension
 
 The data also contained information on hypertension status. Once again, the same filtering and grouping methods were applied to the dataset using the hypertension column.
 
@@ -749,7 +749,7 @@ The hypertension category reveals something a little different than the trend, a
 5)  Ever: 10.5%
 
 
-# Age as a Factor
+### Age as a Factor
 
 When looking at the data, there is a spike in former smokers risk for the three health complications discussed. 
 
@@ -758,7 +758,7 @@ Questions arose; If you never quit smoking, do you maintain similar risk to peop
 To have been classified a former smoker, you at one point had to have been a current smoker; which signifies a change in age from current to former smoking status.
 
 
-# Age and Smoking History Category
+### Age and Smoking History Category
 
 A density plot of the age range by smoking category is created to visualize the ages where each smoking category range from.
 
@@ -781,7 +781,7 @@ smoking_age_density
 
 The density plot shows an increase in former smokers from the 40-60 age range, while current smokers begin to decrease at around age 47. Similarly we see a decrease in all other categories at the 40-60 age range.
 
-# The Age and Health Factors
+### The Age and Health Factors
 
 We can compare this with the density of people with diabetes, hypertension, and heart disease across all ages to see if there are similar spikes.
 
@@ -872,7 +872,7 @@ age_vs_hypertension
 
 With diabetes, heart disease, and hypertension, we see a increase at a similar age range to the former smokers spike, from 40-60. This also highlights how age factors into diabetic health risk. The density plots of age and the three health issues reveal a relationship between age; the older you get, the more likely you are to have diabetes, heart disease, and hypertension, with a big spike once you are over 40 years old.
 
-# Findings
+### Findings
 
 Former smokers are at a higher risk for diabetes, hypertension, and heart disease
 
@@ -886,27 +886,27 @@ Although current smokers risk is not reflected through our percentage graph, fur
 
 **Within this analysis we've scaled**: 
 
-- Diabetes status based by age and gender 
+- Diabetes status based by age and gender.
 
-- Relations towards BMI and Hypertension status 
+- Relations towards BMI and Hypertension status. 
 
-- Shared populations between Diabetes, heart disease, and hypertension status 
+- Shared populations between Diabetes, heart disease, and hypertension status. 
 
-- HbA1c trends among gender 
+- HbA1c trends among gender. 
 
-- Glucose levels dependent by diabetes status 
+- Glucose levels dependent by diabetes status. 
 
-- Smoking status and its relation to Diabetes, heart disease, and hypertension
+- Smoking status and its relation to Diabetes, heart disease, and hypertension.
 
-From this we were able to to effectively show and defend our general assumptions about diabetes and its co factors
+From this we were able to to effectively show and defend our general assumptions about diabetes and its co factors.
 
 ## Limitations within our data
 
 - This data is was gathered from private medical records. Because of confidentiality, the gathering methods of the data were not clear.
 
-- This data does not indicate whether our diabetic patients are type 1 or type 2 diabetic
+- This data does not indicate whether our diabetic patients are type 1 or type 2 diabetic.
 
-- This data is generated from various studies, making up the 100,000 patients
+- This data is generated from various studies, making up the 100,000 patients.
 
 - Blood glucose levels were not detailed on how this data was retrieved. Methods of measuring blood glucose levels vary from multiple hour fasts to immediately after a meal, each of which having different ranges to indicate diabetes. 
 
