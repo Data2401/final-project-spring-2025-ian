@@ -55,7 +55,7 @@ glimpse(diabetes_dataset)
 
 **Can we predict diabetes status based on blood sugar levels?**
 
-For our first plot we filtered our data to categorize males and females as diabetic, pre-diabetic, and normal based on blood sugar levels(HbA1c). To do this we selected the variables of interest which are gender, diabetes, and HbA1c_level. From the first table shown we are able to see that blood sugar levels not necessarily define the diabetes status of the individuals within our data set.
+For our first plot we filtered our data to categorize males and females as diabetic, pre-diabetic, and normal based on blood sugar levels(HbA1c). To do this we selected the variables of interest which are gender, diabetes, and HbA1c_level. From the first table shown we can see that blood sugar levels not necessarily define the diabetes status of the individuals within our data set.
 
 ```{r, fig.width=8, fig.height=6, fig.align="center"}
 
@@ -110,7 +110,7 @@ kable(head(get_perc_count, 5), caption = "6 x 4 (first 5 rows)") # showing the f
 
 **How is age related to diabetes, heart disease, and hypertension?**
 
-To create this density plot we created 2 different groups of individuals the first group are individuals with all 3 conditions which are diabetes, heart disease, and hypertension while the second group is free from all 3 conditions. After separating the 2 groups we brought it together to create a density plot and show the distribution within age. From this graph we concluded that there is a relationship between age and these 3 conditions. From the graph we observe that older individuals tend to have all 3 conditions.
+To create this density plot we created 2 different groups of individuals, the first group are individuals with all 3 conditions which are diabetes, heart disease, and hypertension while the second group is free from all 3 conditions. After separating the 2 groups we brought it together to create a density plot and show the distribution within age. From this graph we concluded that there is a relationship between age and these 3 conditions. From the graph we observe that older individuals tend to have all 3 conditions.
 
 ```{r,fig.width=9, fig.height=5}
 
@@ -158,7 +158,7 @@ ggplotly(interactive_DHH)
 
 **Is there a correlation between body mass index and hypertension status?**
 
-To create this plot we focused on the BMI and Hypertension variables from our data set. 0 representing no hypertension and 1 representing hypertension. From this graph we concluded that there is a correlation within BMI and hypertension status. We observe that individuals with hypertension tend to have higher BMI values compared to those without hypertension.
+To create this plot, we focused on the BMI and Hypertension variables from our data set. 0 representing no hypertension and 1 representing hypertension. From this graph we concluded that there is a correlation between BMI and hypertension status. We observe that individuals with hypertension tend to have higher BMI values compared to those without hypertension.
 
 ```{r,fig.width=7, fig.height=6, fig.align="center"}
 
@@ -191,7 +191,7 @@ ggplotly(BMI_distribution)
 
 ### Blood Glucose Levels by Diabetes Status (age 3-80) Plot
 
-**Whats the correlation between blood glucose levels and diabetes?**
+**What's the correlation between blood glucose levels and diabetes?**
 
 In this box plot we are comparing blood glucose levels by diabetes status, focusing on individuals within ages 3-80 because the youngest individual with diabetes is 3 years old and the oldest is 80. . From this plot we conclude that there is a strong correlation between both variables. From this graph we observe that individuals with higher blood glucose levels tend to fall within the diabetes status.
 
@@ -238,7 +238,7 @@ ggplotly(diabetes_and_no_diabetes_plot)
 
 **Is BMI associated with diabetes, heart disease, and age across out data?**
 
-In this scatter plot we are comparing the age and BMI of 2 different groups of individuals, the first group is the group of individuals with diabetes only and the second group are individuals with a heart disease condition. To achieve these results we created 2 different tables for each group, then we combined the data to create our plot. In the graph we marked a red horizontal line representing the most common BMI for both groups. We concluded that there is a strong correlation between both conditions, BMI, and age. Higher BMI and older age are related to both conditions. We detected a high concentration of individuals who are 80 years old. This could be because diabetes and heart disease tend to be more common among older adults, besides that we discovered that our data set includes a disproportionately high number of individuals within the age of 80.
+In this scatter plot we are comparing the age and BMI of 2 different groups of individuals; the first group is the group of individuals with diabetes only and the second group are individuals with heart disease. To achieve these results, we created 2 different tables for each group, then we combined the data to create our plot. In the graph we marked a red horizontal line representing the most common BMI for both groups. We concluded that there is a strong correlation between both conditions, BMI, and age. Higher BMI and older age are related to both conditions. We detected a high concentration of individuals who are 80 years old. This could be because diabetes and heart disease tend to be more common among older adults, besides that we discovered that our data set includes a disproportionately high number of individuals within the age of 80.
 
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=6, fig.align="center"}
 
