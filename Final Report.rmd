@@ -544,15 +544,13 @@ The total amount of people who fall into each category is as follows;
 
 5)  Ever: 4004
 
-6)  
+6)  No Info: 35816
 
-    ## No Info: 35816
-
-    There is quite a sizable amount of people in the No info category.
+There is quite a sizable amount of people in the No info category.
 
 The total number of people in the dataset is `r nrow(diabetes_dataset)`. To help clean up the data, we can filter 'No Info' people out. When we do that we get `r nrow(diabetes_dataset %>% filter(smoking_history != 'No Info'))`.
 
-```{r Cleaning smoking data, echo=FALSE, message=FALSE, warning=FALSE}
+```{r Cleaning smoking data}
 
 # Figure out the unique categories of smoking history
 #unique(diabetes_dataset$smoking_history)
@@ -569,7 +567,7 @@ The data was then summarized to gather the total counts belonging to each smokin
 
 A percentage per smoking category with diabetes is then calculated dividing the count with diabetes by the total count in each smoking category.
 
-```{r smoking and diabetes, echo=FALSE, message=FALSE, warning=FALSE}
+```{r smoking and diabetes}
 #group diabetic vs non diabetic people together
 
 smoking_diabetes_dataset <- diabetes_dataset %>%
@@ -589,7 +587,7 @@ smoking_diabetes_percentage <- inner_join(smoking_tally, smoking_diabetes_datase
 
 Now we can graph the relationship between smoking and diabetes as separated by smoking category.
 
-```{r Plot smoking and diabetes, echo=FALSE, message=FALSE,warning=FALSE}
+```{r Plot smoking and diabetes}
 
 #Create initial graph about smoking and diabetes
 
@@ -624,7 +622,25 @@ smoking_diabetes_graph
 
 ```
 
-```{r heart disease and smoking, echo=FALSE, warning=FALSE, message=FALSE}
+The graph reveals that 17% of former smokers have diabetes, a significantly higher percentage than all other categories. Never smokers have the lowest percentage, with 9.5% having diabetes, and the other 3 categories range between 10-12%. This shows that former smokers are the most likely to have diabetes compared to all other smoking history categories.
+
+1)  Never: 9.5%
+
+2)  Not current: 10.7%
+
+3)  Former: 17%
+
+4)  Current: 10.2%
+
+5)  Ever: 11.8%
+
+
+## Heart disease and Smoking
+
+This data also included information about heart disease status. The same filters and groupings applied to the diabetes and smoking data was applied with heart disease as the focus.
+
+
+```{r heart disease and smoking}
 smoking_heart_disease_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, heart_disease) %>%  
@@ -636,7 +652,7 @@ smoking_heart_disease_percentage <- inner_join(smoking_tally, smoking_heart_dise
 
 # Graphing relationship of Smoking History and Heart Disease
 
-```{r Heart Disease and Smoking Graph, echo=FALSE, warning=FALSE}
+```{r Heart Disease and Smoking Graph}
 smoking_heart_disease_graph <- ggplot(smoking_heart_disease_percentage,
        aes(x    = smoking_history,
            y    = total,
@@ -667,7 +683,25 @@ smoking_heart_disease_graph <- ggplot(smoking_heart_disease_percentage,
 smoking_heart_disease_graph
 ```
 
-```{r Smoking and hypertension, echo=FALSE, message=FALSE, warning=FALSE}
+The graph reveals a similar relationship, but at much lower percentages. Never smokers once again are at the lowest risk for heart disease at 3.1%, while former smokers sit at 9.7%. Not Current and Current are both at a similar percentage for heart disease, while we see a spike in ever smokers.
+
+1)  Never: 3.1%
+
+2)  Not current: 4.5%
+
+3)  Former: 9.7%
+
+4)  Current: 4.4%
+
+5)  Ever: 7.8%
+
+The lower percentages indicate less correlation between smoking and heart disease, however the trend of former smokers having higher risk for disease still exists.
+
+# Smoking and Hypertension
+
+The data also contained information on hypertension status. Once again, the same filtering and grouping methods were applied to the dataset using the hypertension column.
+
+```{r Smoking and hypertension}
 smoking_hypertension_data <- diabetes_dataset %>%
   filter(smoking_history != 'No Info') %>%  
   group_by(smoking_history, hypertension) %>%  
@@ -677,9 +711,8 @@ smoking_hypertension_percentage <- inner_join(smoking_tally, smoking_hypertensio
 
 ```
 
-# Smoking and Hypertension
 
-```{r Smoking and Hypertension Graph, echo=FALSE, warning=FALSE}
+```{r Smoking and Hypertension Graph}
 smoking_hypertension_graph <- ggplot(smoking_hypertension_percentage,
        aes(x    = smoking_history,
            y    = total,
